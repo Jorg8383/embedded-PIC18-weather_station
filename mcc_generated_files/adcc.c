@@ -49,12 +49,13 @@
 */
 
 #include <xc.h>
+#include <stdio.h>
 #include "adcc.h"
 
 /**
   Section: ADCC Module Variables
 */
-void (*ADCC_ADI_InterruptHandler)(void);
+void (*ADCC_ADTI_InterruptHandler)(void);
 
 /**
   Section: ADCC Module APIs
@@ -87,8 +88,8 @@ void ADCC_Initialize(void)
     ADCON1 = 0x00;
     // ADCRS 5; ADMD Burst_average_mode; ADACLR disabled; ADPSIS ADRES; 
     ADCON2 = 0x53;
-    // ADCALC Filtered value vs setpoint; ADTMD disabled; ADSOI ADGO not cleared; 
-    ADCON3 = 0x50;
+    // ADCALC Filtered value vs setpoint; ADTMD enabled; ADSOI ADGO not cleared; 
+    ADCON3 = 0x57;
     // ADAOV ACC or ADERR not Overflowed; 
     ADSTAT = 0x00;
     // ADNREF VSS; ADPREF VDD; 
@@ -102,13 +103,13 @@ void ADCC_Initialize(void)
     // ADACQ 80; 
     ADACQ = 0x50;
     
-    // Clear the ADC interrupt flag
-    PIR1bits.ADIF = 0;
-    // Enabling ADCC interrupt.
-    PIE1bits.ADIE = 1;
 
-    ADCC_SetADIInterruptHandler(ADCC_DefaultInterruptHandler);
+    // Clear the ADC Threshold interrupt flag
+    PIR1bits.ADTIF = 0;
+    // Enabling ADCC threshold interrupt.
+    PIE1bits.ADTIE = 1;
 
+    ADCC_SetADTIInterruptHandler(ADCC_DefaultInterruptHandler);
 }
 
 void ADCC_StartConversion(adcc_channel_t channel)
@@ -295,22 +296,24 @@ uint8_t ADCC_GetConversionStageStatus(void)
     return ADSTATbits.ADSTAT;
 }
 
-void ADCC_ISR(void)
+
+void ADCC_ThresholdISR(void)
 {
-    // Clear the ADCC interrupt flag
-    PIR1bits.ADIF = 0;
+    // Clear the ADCC Threshold interrupt flag
+    PIR1bits.ADTIF = 0;
 
-    if (ADCC_ADI_InterruptHandler)
-            ADCC_ADI_InterruptHandler();
+    if (ADCC_ADTI_InterruptHandler)
+        ADCC_ADTI_InterruptHandler();
 }
 
-void ADCC_SetADIInterruptHandler(void (* InterruptHandler)(void)){
-    ADCC_ADI_InterruptHandler = InterruptHandler;
+void ADCC_SetADTIInterruptHandler(void (* InterruptHandler)(void)){
+    ADCC_ADTI_InterruptHandler = InterruptHandler;
 }
-
 void ADCC_DefaultInterruptHandler(void){
     // add your ADCC interrupt custom code
     // or set custom function using ADCC_SetADIInterruptHandler() or ADCC_SetADTIInterruptHandler()
+    
+    printf("\n%i", ADCC_GetFilterValue());
 }
 /**
  End of File
