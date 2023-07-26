@@ -1,23 +1,31 @@
 /**
-  
-  Author:
-    Jorg Striebel
-
-  File Name:
-    main.c
-
-  Summary:
-    Main file of weather station project
-
-  Description:
-    Device:     PIC18F47Q10
+ * 
+ * File Name:           main.c
+ * Author:              J. Striebel
+ * Project:             Weather Station
+ * Device:              PIC18F47Q10
+ * Platform:            Curiosity HPC board (DM164136)
+ * Compiler:            XC8 (v2.41)
+ * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
+ * Program version:     1.0
+ 
+ * Program Description:
+ * xxx
+ * 
+ * Hardware Description:
+ * xxx
+ * 
 */
 
+/******************************************************************************
+ * Includes and defines
+ ******************************************************************************/
 #include "mcc_generated_files/mcc.h"
 
-/*
-                         Main application
- */
+
+/******************************************************************************
+ * Main application
+ ******************************************************************************/
 void main(void)
 {
     // Initialize the device
