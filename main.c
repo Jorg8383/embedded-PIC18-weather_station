@@ -21,7 +21,7 @@
  * Includes and defines
  ******************************************************************************/
 #include "mcc_generated_files/mcc.h"
-#include "lcd_hd44780.h"
+#include "lcd.h"
 
 /******************************************************************************
  * Main application
@@ -58,7 +58,7 @@ void main(void)
 
         // Control LCD backlight brightness
         if (adcFetchUpdatedPotValue) {
-            PWM3_LoadDutyValue(lcd_scale_backlight_brightness(adcPotValue,
+            PWM3_LoadDutyValue(LCD_ScaleBacklightBrightness(adcPotValue,
                     ADC_RESOLUTION));
         }
     }

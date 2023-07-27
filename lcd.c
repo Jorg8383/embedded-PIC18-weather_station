@@ -1,6 +1,6 @@
 /**
  * 
- * File:                lcd_hd44780.c
+ * File:                lcd.c
  * Author:              J. Striebel
  * Project:             Weather Station
  * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V 
@@ -17,12 +17,12 @@
  * 
 */
 
-#include "lcd_hd44780.h"
+#include "lcd.h"
 
 // Internal function prototypes
-static void lcd_set_data_bits(uint8_t data);
-static void lcd_cmd(uint8_t cmd);
-static void lcd_enable(void);
+static void LCD_SetDataBits(uint8_t data);
+static void LCD_Cmd(uint8_t cmd);
+static void LCD_Enable(void);
 
 
 /******************************************************************************
@@ -33,7 +33,7 @@ static void lcd_enable(void);
  * Description: This function scales the LCD backlight brightness based on the 
  * inputted dimValue and returns the duty cycle that can be used by a PWM.  
  ******************************************************************************/
-uint16_t lcd_scale_backlight_brightness(    uint16_t dimValue, 
+uint16_t LCD_ScaleBacklightBrightness(    uint16_t dimValue, 
                                             uint16_t dimResolution)
 {
     // Check for zero division

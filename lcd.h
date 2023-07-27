@@ -1,5 +1,5 @@
 /* 
- * File:                lcd_hd44780.h
+ * File:                lcd.h
  * Author:              J. Striebel
  * Project:             Weather Station
  * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V 
@@ -52,12 +52,12 @@ extern "C" {
 #define LCD_BUSY    PORTDbits.RD7   // busy flag
     
 // Function prototypes
-uint16_t lcd_scale_backlight_brightness(uint16_t dimValue, uint16_t dimResolution);
-void lcd_initialise(void);
-void lcd_print_character(uint8_t var);
-void lcd_print_string(const uint8_t *var);
-void lcd_print_integer(uint16_t var);
-void lcd_print_float(float var);    
+uint16_t LCD_ScaleBacklightBrightness(uint16_t dimValue, uint16_t dimResolution);
+void LCD_Initialise(void);
+void LCD_PrintCharacter(uint8_t var);
+void LCD_PrintString(const uint8_t *var);
+void LCD_PrintInteger(uint16_t var);
+void LCD_PrintFloat(float var);    
     
 #ifdef	__cplusplus
 }
