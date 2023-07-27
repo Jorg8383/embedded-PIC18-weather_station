@@ -3,7 +3,7 @@
  * File Name:           main.c
  * Author:              J. Striebel
  * Project:             Weather Station
- * Device:              PIC18F47Q10
+ * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V 
  * Platform:            Curiosity HPC board (DM164136)
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
@@ -21,7 +21,7 @@
  * Includes and defines
  ******************************************************************************/
 #include "mcc_generated_files/mcc.h"
-
+#include "lcd_hd44780.h"
 
 /******************************************************************************
  * Main application
@@ -39,7 +39,7 @@ void main(void)
     INTERRUPT_GlobalInterruptEnable();
 
     // Disable the Global Interrupts
-//    INTERRUPT_GlobalInterruptDisable();
+    //INTERRUPT_GlobalInterruptDisable();
 
     // Enable the Peripheral Interrupts
     INTERRUPT_PeripheralInterruptEnable();
@@ -52,7 +52,15 @@ void main(void)
     
     while (1)
     {
-        // Add your application code
+        /**********************************************************************
+         LCD control
+         **********************************************************************/
+
+        // Control LCD backlight brightness
+        if (adcFetchUpdatedPotValue) {
+            PWM3_LoadDutyValue(lcd_scale_backlight_brightness(adcPotValue,
+                    ADC_RESOLUTION));
+        }
     }
 }
 /**

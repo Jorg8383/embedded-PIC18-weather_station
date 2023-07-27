@@ -61,6 +61,13 @@
 
 #endif
 
+// Extern global variables
+extern volatile uint8_t    adcFetchUpdatedPotValue;
+extern volatile uint16_t   adcPotValue;
+
+// ADC constants
+const uint16_t ADC_RESOLUTION = 1024; // 10-bit analog to digital converter
+
 /**
   Section: Data Types Definitions
 */

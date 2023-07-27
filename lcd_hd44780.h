@@ -2,7 +2,7 @@
  * File:                lcd_hd44780.h
  * Author:              J. Striebel
  * Project:             Weather Station
- * Device:              PIC18F47Q10
+ * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V 
  * Platform:            Curiosity HPC board (DM164136)
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
@@ -52,10 +52,7 @@ extern "C" {
 #define LCD_BUSY    PORTDbits.RD7   // busy flag
     
 // Function prototypes
-void lcd_control_backlight(uint16_t potValue, uint16_t potResolution);
-void lcd_set_data_bits(uint8_t data);
-void lcd_cmd(uint8_t cmd);
-void lcd_enable(void);
+uint16_t lcd_scale_backlight_brightness(uint16_t dimValue, uint16_t dimResolution);
 void lcd_initialise(void);
 void lcd_print_character(uint8_t var);
 void lcd_print_string(const uint8_t *var);
