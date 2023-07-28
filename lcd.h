@@ -38,18 +38,19 @@ extern "C" {
 #endif
 
 // Include and defines
-#include <xc.h>
-#include "mcc_generated_files/pin_manager.h"
+#include "mcc_generated_files/mcc.h"
+#include <stdbool.h>
 
+// IO mapping
 #define LCD_BL      LATDbits.LATD0  // LCD backlight LED
-#define LCD_RS      LATDbits.LATD1  // 1 = data register, 2 = instruction register
-#define LCD_RW      LATDbits.LATD2  // 1 = read mode, 2 = write mode
-#define LCD_EN      LATDbits.LATD3  // enable signal for writing/reading data
+#define LCD_RS      LATDbits.LATD1  // Selects register: (0) = instruction, (1) = data
+#define LCD_RW      LATDbits.LATD2  // Selects mode: (0) = write, (1) = read
+#define LCD_EN      LATDbits.LATD3  // Starts data read/write
 #define LCD_DB4     LATDbits.LATD4  
 #define LCD_DB5     LATDbits.LATD5
 #define LCD_DB6     LATDbits.LATD6
 #define LCD_DB7     LATDbits.LATD7
-#define LCD_BUSY    PORTDbits.RD7   // busy flag
+#define LCD_BUSY    PORTDbits.RD7   // busy flag (when RS = 0 & RW = 1)
     
 // Function prototypes
 void LCD_Initialise(void);
