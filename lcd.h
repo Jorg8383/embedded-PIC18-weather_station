@@ -54,10 +54,11 @@ extern "C" {
     
 // Function prototypes
 void LCD_Initialise(void);
-void LCD_PrintCharacter(uint8_t var);
-void LCD_PrintString(const uint8_t *var);
-void LCD_PrintInteger(uint16_t var);
-void LCD_PrintFloat(float var);    
+void LCD_Clear(void);
+void LCD_PrintCharacter(char input);
+void LCD_PrintString(const char *input);
+void LCD_PrintInteger(uint16_t input);
+void LCD_PrintFloat(float input);    
     
 #ifdef	__cplusplus
 }
