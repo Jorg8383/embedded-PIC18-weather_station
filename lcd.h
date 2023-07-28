@@ -52,7 +52,6 @@ extern "C" {
 #define LCD_BUSY    PORTDbits.RD7   // busy flag
     
 // Function prototypes
-uint16_t LCD_ScaleBacklightBrightness(uint16_t dimValue, uint16_t dimResolution);
 void LCD_Initialise(void);
 void LCD_PrintCharacter(uint8_t var);
 void LCD_PrintString(const uint8_t *var);

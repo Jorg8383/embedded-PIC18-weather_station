@@ -51,13 +51,11 @@
 #include <xc.h>
 #include <stdio.h>
 #include "adcc.h"
+#include "pwm3.h"
 
 /**
   Section: ADCC Module Variables
 */
-volatile uint8_t    adcFetchUpdatedPotValue;
-volatile uint16_t   adcPotValue;
-
 void (*ADCC_ADTI_InterruptHandler)(void);
 
 /**
@@ -315,18 +313,14 @@ void ADCC_SetADTIInterruptHandler(void (* InterruptHandler)(void)){
 void ADCC_DefaultInterruptHandler(void){
     // add your ADCC interrupt custom code
     // or set custom function using ADCC_SetADIInterruptHandler() or ADCC_SetADTIInterruptHandler()
-    static volatile uint16_t    prevPotValue;
     
     // First, check which channel has caused the interrupt
     if (ADPCH == 0x0) { // channel RA0/ANA0
-        if (prevPotValue != ADCC_GetFilterValue() & !adcFetchUpdatedPotValue) {
-            adcPotValue = ADCC_GetFilterValue();
-            prevPotValue = adcPotValue;
-            adcFetchUpdatedPotValue = 1;
-        } 
+        /* Both filtered ADC and PWM duty cycle value are 10-bit. 
+         * The ACD value is in the range of 0d to 1023d, representing 0% to 100%
+         * of the PWM duty cycle. Therefore, no conversion is required. */
+        PWM3_LoadDutyValue(ADCC_GetFilterValue());
     }
-    
-    //printf("\n%i", ADCC_GetFilterValue());
 }
 /**
  End of File

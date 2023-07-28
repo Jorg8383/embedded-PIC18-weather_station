@@ -26,19 +26,9 @@ static void LCD_Enable(void);
 
 
 /******************************************************************************
- * Function: lcd_scale_backlight_brightness(...)
+ * Function: 
  *
- * Returns: Duty cycle for PWM (0..100%)
+ * Returns: 
  * 
- * Description: This function scales the LCD backlight brightness based on the 
- * inputted dimValue and returns the duty cycle that can be used by a PWM.  
+ * Description: 
  ******************************************************************************/
-uint16_t LCD_ScaleBacklightBrightness(    uint16_t dimValue, 
-                                            uint16_t dimResolution)
-{
-    // Check for zero division
-    if (dimResolution != 0)
-        /* Scale brightness using 32-bit integer to avoid overflow and then 
-        cast result to 16-bit integer */
-        return (uint16_t) dimValue * 100UL / dimResolution;
-}

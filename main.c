@@ -21,6 +21,7 @@
  * Includes and defines
  ******************************************************************************/
 #include "mcc_generated_files/mcc.h"
+#include "mcc_generated_files/adcc.h"
 #include "lcd.h"
 
 /******************************************************************************
@@ -49,18 +50,11 @@ void main(void)
 
     // Select ADC channel, enable ADC and start conversion
     ADCC_StartConversion(RA0_POT);
+    TMR2_Start();
     
     while (1)
     {
-        /**********************************************************************
-         LCD control
-         **********************************************************************/
-
-        // Control LCD backlight brightness
-        if (adcFetchUpdatedPotValue) {
-            PWM3_LoadDutyValue(LCD_ScaleBacklightBrightness(adcPotValue,
-                    ADC_RESOLUTION));
-        }
+        ;
     }
 }
 /**

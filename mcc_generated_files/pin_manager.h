@@ -109,25 +109,17 @@
 #define RC7_SetAnalogMode()         do { ANSELCbits.ANSELC7 = 1; } while(0)
 #define RC7_SetDigitalMode()        do { ANSELCbits.ANSELC7 = 0; } while(0)
 
-// get/set RD0_LCD_BACKLIGHT aliases
-#define RD0_LCD_BACKLIGHT_TRIS                 TRISDbits.TRISD0
-#define RD0_LCD_BACKLIGHT_LAT                  LATDbits.LATD0
-#define RD0_LCD_BACKLIGHT_PORT                 PORTDbits.RD0
-#define RD0_LCD_BACKLIGHT_WPU                  WPUDbits.WPUD0
-#define RD0_LCD_BACKLIGHT_OD                   ODCONDbits.ODCD0
-#define RD0_LCD_BACKLIGHT_ANS                  ANSELDbits.ANSELD0
-#define RD0_LCD_BACKLIGHT_SetHigh()            do { LATDbits.LATD0 = 1; } while(0)
-#define RD0_LCD_BACKLIGHT_SetLow()             do { LATDbits.LATD0 = 0; } while(0)
-#define RD0_LCD_BACKLIGHT_Toggle()             do { LATDbits.LATD0 = ~LATDbits.LATD0; } while(0)
-#define RD0_LCD_BACKLIGHT_GetValue()           PORTDbits.RD0
-#define RD0_LCD_BACKLIGHT_SetDigitalInput()    do { TRISDbits.TRISD0 = 1; } while(0)
-#define RD0_LCD_BACKLIGHT_SetDigitalOutput()   do { TRISDbits.TRISD0 = 0; } while(0)
-#define RD0_LCD_BACKLIGHT_SetPullup()          do { WPUDbits.WPUD0 = 1; } while(0)
-#define RD0_LCD_BACKLIGHT_ResetPullup()        do { WPUDbits.WPUD0 = 0; } while(0)
-#define RD0_LCD_BACKLIGHT_SetPushPull()        do { ODCONDbits.ODCD0 = 0; } while(0)
-#define RD0_LCD_BACKLIGHT_SetOpenDrain()       do { ODCONDbits.ODCD0 = 1; } while(0)
-#define RD0_LCD_BACKLIGHT_SetAnalogMode()      do { ANSELDbits.ANSELD0 = 1; } while(0)
-#define RD0_LCD_BACKLIGHT_SetDigitalMode()     do { ANSELDbits.ANSELD0 = 0; } while(0)
+// get/set RD0 procedures
+#define RD0_SetHigh()            do { LATDbits.LATD0 = 1; } while(0)
+#define RD0_SetLow()             do { LATDbits.LATD0 = 0; } while(0)
+#define RD0_Toggle()             do { LATDbits.LATD0 = ~LATDbits.LATD0; } while(0)
+#define RD0_GetValue()              PORTDbits.RD0
+#define RD0_SetDigitalInput()    do { TRISDbits.TRISD0 = 1; } while(0)
+#define RD0_SetDigitalOutput()   do { TRISDbits.TRISD0 = 0; } while(0)
+#define RD0_SetPullup()             do { WPUDbits.WPUD0 = 1; } while(0)
+#define RD0_ResetPullup()           do { WPUDbits.WPUD0 = 0; } while(0)
+#define RD0_SetAnalogMode()         do { ANSELDbits.ANSELD0 = 1; } while(0)
+#define RD0_SetDigitalMode()        do { ANSELDbits.ANSELD0 = 0; } while(0)
 
 // get/set RD1_LCD_RS aliases
 #define RD1_LCD_RS_TRIS                 TRISDbits.TRISD1
