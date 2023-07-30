@@ -21,13 +21,12 @@
 #include <string.h>
 
 // Internal function prototypes
-static void     LCD_SetDataBits(char input);
-static void     LCD_Cmd(char cmd);
-static void     LCD_Enable(void);
-static _Bool    LCD_IsIdle(void);
+static void LCD_TransferNibbleBits(char input);
+static void LCD_Write(char input, LCD_REG_TYPE regType);
+static _Bool LCD_IsIdle(void);
 
 /******************************************************************************
- * Function: LCD_SetDataBits(char input)
+ * Function: LCD_SendNibbleBits(uint8_t input)
  *
  * Returns: Nothing
  * 
@@ -39,67 +38,46 @@ static _Bool    LCD_IsIdle(void);
  * (for 8-bit operation, DB4 to DB7) are transferred before the four low order 
  * bits (for 8-bit operation, DB0 to DB3)
  ******************************************************************************/
-static void LCD_SetDataBits(char input) {
+static void LCD_TransferNibbleBits(char input) {
     
-    if (input & 1)
-        LCD_DB4 = 1;
-    else
-        LCD_DB4 = 0;
-        
-    if (input & 2)
-        LCD_DB5 = 1;
-    else
-        LCD_DB5 = 0;
+    // Use the ternary operator to decode the nibble bits to be sent
+    LCD_DB4 = (input & 0x01) ? 1 : 0;
+    LCD_DB5 = (input & 0x02) ? 1 : 0;
+    LCD_DB6 = (input & 0x04) ? 1 : 0;
+    LCD_DB7 = (input & 0x08) ? 1 : 0;
 
-    if (input & 4)
-        LCD_DB6 = 1;
-    else
-        LCD_DB6 = 0;
-
-    if (input & 8)
-        LCD_DB7 = 1;
-    else
-        LCD_DB7 = 0;
-}
-
-
-/******************************************************************************
- * Function: LCD_Cmd(char cmd)
- *
- * Returns: Nothing
- * 
- * Description: Sets the instruction to control the LCD display
- ******************************************************************************/
-static void LCD_Cmd(char cmd) {
-
-    LCD_RS = 0; // Select instruction register
-    LCD_RW = 0; // Select write mode
-    __delay_ms(2);
-    LCD_SetDataBits(cmd); // Set hex value
-    LCD_Enable();
-
-}
-
-
-/******************************************************************************
- * Function: LCD_Enable(void)
- *
- * Returns: Nothing
- * 
- * Description: Used after writing an instruction to the LCD. It sets the enable
- * read/write pin for a short period of time and then resets it.
- ******************************************************************************/
-static void LCD_Enable(void) {
-    
-    LCD_EN = 1; // Starts reading/writing data
-    __delay_us(500);
+    LCD_EN = 1; // Start reading/writing data
+    __delay_us(100);
     LCD_EN = 0;
+    __delay_us(100);
     
 }
 
 
 /******************************************************************************
- * Function: LCD_IsNotBusy(void)
+ * Function: LCD_Write(uint8_t input, LCD_REG_TYPE regType)
+ *
+ * Returns: Nothing
+ * 
+ * Description: This routine selects the provided register type (instruction OR 
+ * data) and transmits the provided input instruction/data (8-bit) as two
+ * consecutive nibble transfers.
+ ******************************************************************************/
+static void LCD_Write(char input, LCD_REG_TYPE regType) {
+    
+    // RS = 0 --> instruction register, RS = 1 --> data register
+    LCD_RS = (regType == LCD_REG_CMD) ? 0 : 1; 
+    __delay_us(100);
+    
+    while (!LCD_IsIdle()); // Check whether LCD is busy
+    LCD_TransferNibbleBits((input & 0xF0) >> 4); // transmit upper nibble first
+    while (!LCD_IsIdle()); // wait while LCD is busy
+    LCD_TransferNibbleBits(input & 0x0F); // transmit lower nibble second
+    
+}
+
+/******************************************************************************
+ * Function: LCD_IsIdle(void)
  *
  * Returns: "true" if LCD is idle 
  * 
@@ -126,30 +104,43 @@ static _Bool LCD_IsIdle(void) {
 }
 
 /******************************************************************************
- * Function: LCD_Initialise(void)
+ * Function: LCD_Init(void)
  *
  * Returns: Nothing
  * 
  * Description: Initialises the LCD
  ******************************************************************************/
-void LCD_Initialise(void) {
-    
-    LCD_SetDataBits(0x00); // Clear data bits
-    __delay_ms(50);
-    LCD_Cmd(0x03);
-    __delay_ms(10);
-    LCD_Cmd(0x03);
-    __delay_ms(10);
-    LCD_Cmd(0x03);
+void LCD_Init(void) {
 
-    LCD_Cmd(0x02);
-    LCD_Cmd(0x02);
-    LCD_Cmd(0x08);
-    LCD_Cmd(0x00);
-    LCD_Cmd(0x0C);
-    LCD_Cmd(0x00);
-    LCD_Cmd(0x06);
+    LCD_TransferNibbleBits(0x03); // Function set (8-bit)
+    __delay_ms(10);
+    LCD_TransferNibbleBits(0x03); // Function set (8-bit)
+    __delay_ms(10);
+    LCD_TransferNibbleBits(0x03); // Function set (8-bit)
+    __delay_ms(10);
+    LCD_TransferNibbleBits(0x02); // Set interface to 4-bit mode
+    __delay_ms(10);
     
+    /* Function set:
+     * 4-bit interface, (N = 1) two lines, (F = 0) 5 x 8 dots font size */
+    LCD_Write((0b00100000 | 1 << FUNC_SET_N_POS | 0 << FUNC_SET_F_POS),
+            LCD_REG_CMD);
+    __delay_ms(5);
+    /* Display control: 
+     * (D = 0) display off, (C = 0) cursor off, (B = 0) blinking off */
+    LCD_Write((0b00001000 | 0 << DISPLAY_CTRL_D_POS | 0 << DISPLAY_CTRL_C_POS |
+            0 << DISPLAY_CTRL_B_POS), LCD_REG_CMD);
+    __delay_ms(8);
+    LCD_Clear();
+    __delay_ms(5);
+    /* Entry mode set:
+     * (I/D = 1) Increment DDRAM address by 1; moves the cursor to the right,
+     * (S = 0) no display shift */
+    LCD_Write((0b00000100 | 1 << ENTRY_MODE_ID_POS | 0 << ENTRY_MODE_S_POS),
+            LCD_REG_CMD);
+    __delay_ms(5);
+    LCD_Clear();
+        
     /* At this point, after completing the initialisation, the busy bit DB7
     can be checked */
     
@@ -166,34 +157,22 @@ void LCD_Initialise(void) {
  ******************************************************************************/
 void LCD_Clear(void) {
     
-    LCD_Cmd(0x00); // Turn the display on
-    LCD_Cmd(0x01); // Clear the display
+    LCD_Write(0x01, LCD_REG_CMD);
+    __delay_ms(2);
     
 }
 
 
 /******************************************************************************
- * Function: LCD_PrintCharacter(char input)
+ * Function: LCD_PrintCharacter(uint8_t input)
  *
  * Returns: Nothing
  * 
  * Description: This routine...
  ******************************************************************************/
 void LCD_PrintCharacter(char input) {
-    
-    char lowerNibble, upperNibble;
-    lowerNibble = input & 0x0F;
-    upperNibble = input & 0xF0;
-    
-    LCD_RS = 1; // Select data register
-    LCD_RW = 0; // Select write mode
-   
-    while(!LCD_IsIdle()); // Check if LCD is busy
-    LCD_SetDataBits(upperNibble >> 4); // Transfer upper nibble first
-    LCD_Enable(); // Start writing data
-    while(!LCD_IsIdle()); // Wait while LCD is still busy
-    LCD_SetDataBits(lowerNibble);
-    LCD_Enable(); // Start writing data
+  
+    LCD_Write(input, LCD_REG_DATA);
 
 }
 
@@ -209,10 +188,10 @@ void LCD_PrintString(const char *input) {
     
     size_t i;
     
-    /* Note: Unlike the "sizeof" function, the "strlen" function does not 
-     * count the null terminating character "\0" */
+    /* Note: Unlike "sizeof()", "strlen()" does not include the null terminating 
+     * character "\0" */
     for (i = 0; i < strlen(input); i++)
-        LCD_PrintCharacter(input[i]);
+        LCD_PrintCharacter(*(input + i));
     
 }
 

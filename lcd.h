@@ -41,7 +41,7 @@ extern "C" {
 #include "mcc_generated_files/mcc.h"
 #include <stdbool.h>
 
-// IO mapping
+// Project specific IO mapping
 #define LCD_BL      LATDbits.LATD0  // LCD backlight LED
 #define LCD_RS      LATDbits.LATD1  // Selects register: (0) = instruction, (1) = data
 #define LCD_RW      LATDbits.LATD2  // Selects mode: (0) = write, (1) = read
@@ -51,14 +51,50 @@ extern "C" {
 #define LCD_DB6     LATDbits.LATD6
 #define LCD_DB7     LATDbits.LATD7
 #define LCD_BUSY    PORTDbits.RD7   // busy flag (when RS = 0 & RW = 1)
+
+/****************************************************************************** 
+* LCD instruction register macros 
+******************************************************************************/
+#define ENTRY_MODE_ID_POS (1)
+/* I/D: Increments (I/D = 1) or decrements (I/D = 0) the DDRAM address by 1 
+ * when a character code is written into or read from DDRAM. The cursor or 
+ * blinking moves to the right when incremented by 1 and to the left when 
+ * decremented by 1. The same applies to writing and reading of CGRAM. */    
+#define ENTRY_MODE_S_POS (0)
+/* S: Shifts the entire display either to the right (I/D = 0) or to the left 
+ * (I/D = 1) when S is 1. The display does not shift if S is 0 */
+#define DISPLAY_CTRL_D_POS (2)
+/* D: The display is on when D is 1 and off when D is 0 */
+#define DISPLAY_CTRL_C_POS (1)
+/* C: The cursor is displayed when C is 1 and not displayed when C is 0 */
+#define DISPLAY_CTRL_B_POS (0)
+/* B: The character indicated by the cursor blinks when B is 1 */
+#define FUNC_SET_DL_POS (4)
+/* DL: Sets the interface data length. Data is sent or received in 8-bit lengths 
+ * (DB7 to DB0) when DL is 1, and in 4-bit lengths (DB7 to DB4) when DL is 0 */    
+#define FUNC_SET_N_POS (3)
+/* N: Sets the number of display lines. Two lines (N = 1), one line (N = 0) */    
+#define FUNC_SET_F_POS (2)
+/* F: Sets the character font. 5 x 10 dots (F = 1), 5 x 8 dots (F = 0)  */    
+    
+// Type definitions    
+typedef enum {
+    LCD_FIRST_LINE,
+    LCD_SECOND_LINE
+} LCD_CURSOR_LINE;
+
+typedef enum {
+    LCD_REG_CMD,
+    LCD_REG_DATA       
+} LCD_REG_TYPE;
     
 // Function prototypes
-void LCD_Initialise(void);
-void LCD_Clear(void);
-void LCD_PrintCharacter(char input);
-void LCD_PrintString(const char *input);
-void LCD_PrintInteger(uint16_t input);
-void LCD_PrintFloat(float input);    
+extern void LCD_Init(void);
+extern void LCD_Clear(void);
+extern void LCD_PrintCharacter(char input);
+extern void LCD_PrintString(const char *input);
+extern void LCD_PrintInteger(uint16_t input);
+extern void LCD_PrintFloat(float input);    
     
 #ifdef	__cplusplus
 }
