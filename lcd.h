@@ -2,8 +2,9 @@
  * File:                lcd.h
  * Author:              J. Striebel
  * Project:             Weather Station
- * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V 
+ * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V
  * Platform:            Curiosity HPC board (DM164136)
+ * Display:             LCD 16x2 - Hitachi HD44780
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  * Program version:     1.0
@@ -40,7 +41,8 @@ extern "C" {
 // Include and defines
 #include "mcc_generated_files/mcc.h"
 #include <stdbool.h>
-
+#include <string.h>
+    
 // Project specific IO mapping
 #define LCD_BL      LATDbits.LATD0  // LCD backlight LED
 #define LCD_RS      LATDbits.LATD1  // Selects register: (0) = instruction, (1) = data
@@ -76,6 +78,11 @@ extern "C" {
 /* N: Sets the number of display lines. Two lines (N = 1), one line (N = 0) */    
 #define FUNC_SET_F_POS (2)
 /* F: Sets the character font. 5 x 10 dots (F = 1), 5 x 8 dots (F = 0)  */    
+
+// Base definitions for integer to string conversion    
+#define INT_BASE_DECIMAL 10 // Base 10 for decimal
+#define INT_BASE_OCTAL 8 // Base 8 for octal
+#define INT_BASE_HEX 16 // Base 16 for hexadecimal    
     
 // Type definitions    
 typedef enum {
@@ -91,11 +98,13 @@ typedef enum {
 // Function prototypes
 extern void LCD_Init(void);
 extern void LCD_Clear(void);
+extern void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset);
+extern void LCD_ShiftDisplayRight(void);
+extern void LCD_ShiftDisplayLeft(void);
 extern void LCD_PrintCharacter(char input);
 extern void LCD_PrintString(const char *input);
-extern void LCD_PrintInteger(uint16_t input);
-extern void LCD_PrintFloat(float input);    
-    
+extern void LCD_PrintInteger(int16_t number, uint8_t intBase);
+
 #ifdef	__cplusplus
 }
 #endif
