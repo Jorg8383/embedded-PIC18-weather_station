@@ -26,6 +26,9 @@ static void LCD_Write(char input, LCD_REG_TYPE regType);
 static void LCD_ReverseString(char str[], uint16_t length);
 static _Bool LCD_IsIdle(void);
 
+static _Bool busyBitEnabled = false;
+uint8_t transferCount = 0;
+
 /******************************************************************************
  * Function: LCD_SendNibbleBits(char input)
  *
@@ -47,15 +50,22 @@ static void LCD_TransferNibbleBits(char input) {
     LCD_DB6 = (input & 0x04) ? 1 : 0;
     LCD_DB7 = (input & 0x08) ? 1 : 0;
 
+//    transferCount++;
+//    printf("Transfer count: %u -- data (hex): %x\n", transferCount, (PORTD & 0xF0) >> 4);
+//    printf("Transfer count: %u -- control: %x\n", transferCount, PORTD & 0x0E);
+    
     LCD_EN = 1; // Start reading/writing data
-    __delay_us(100);
+    __delay_us(800);
     LCD_EN = 0;
-    __delay_us(100);   
+    __delay_us(800);
+       
+  
+    
 }
 
 
 /******************************************************************************
- * Function: LCD_Write(uint8_t input, LCD_REG_TYPE regType)
+ * Function: LCD_Write(char input, LCD_REG_TYPE regType, _Bool checkBusyBit)
  *
  * Returns: Nothing
  * 
@@ -73,6 +83,8 @@ static void LCD_Write(char input, LCD_REG_TYPE regType) {
     LCD_TransferNibbleBits((input & 0xF0) >> 4); // transmit upper nibble first
     while (!LCD_IsIdle()); // wait while LCD is busy
     LCD_TransferNibbleBits(input & 0x0F); // transmit lower nibble second
+    
+    
 }
 
 /******************************************************************************
@@ -85,21 +97,19 @@ static void LCD_Write(char input, LCD_REG_TYPE regType) {
  * will be accepted. 
  ******************************************************************************/
 static _Bool LCD_IsIdle(void) {
+
+    _Bool rsState;
+
+    if (busyBitEnabled) {
     
-    uint8_t rsState;
-    
-    // Save RS state before changing it 
-    rsState = LCD_RS;
-    
-    LCD_RS = 0; // Select instruction register
-    LCD_RW = 1; // Select read mode
-    __delay_ms(2);
-    while (!LCD_DB7); // wait while being busy (DB7 = 1)
-    
-    // Restore RS state 
-    LCD_RS = rsState;
-    
-    return true;
+        rsState = LCD_RS; // Save RS state before changing it 
+        LCD_RS = 0; // Select instruction register
+        LCD_RW = 1; // Select read mode
+        __delay_ms(2);
+        while (!LCD_DB7); // wait while being busy (DB7 = 1)
+        LCD_RS = rsState; // Restore RS state   
+    } 
+    return true; // If busy bit isn't enabled then return true straight away
 }
 
 /******************************************************************************
@@ -111,36 +121,37 @@ static _Bool LCD_IsIdle(void) {
  ******************************************************************************/
 void LCD_Init(void) {
 
+    LATD = LATD & 0x0F; // Reset data bit interface pins
+    LCD_RS = 0; // Select instruction register
+    LCD_RW = 0; // Select write mode
+    __delay_ms(500);            
     LCD_TransferNibbleBits(0x03); // Function set (8-bit)
     __delay_ms(10);
     LCD_TransferNibbleBits(0x03); // Function set (8-bit)
-    __delay_ms(10);
+    __delay_ms(3);
     LCD_TransferNibbleBits(0x03); // Function set (8-bit)
-    __delay_ms(10);
-    LCD_TransferNibbleBits(0x02); // Set interface to 4-bit mode
-    __delay_ms(10);
+    __delay_ms(5);
     
-    /* Now at this point, the busy bit DB7 can be checked */
-
+    LCD_TransferNibbleBits(0x02); // Set interface to 4-bit mode
     /* Function set:
      * 4-bit interface, (N = 1) two lines, (F = 0) 5 x 8 dots font size */
     LCD_Write((0b00100000 | 1 << FUNC_SET_N_POS | 0 << FUNC_SET_F_POS),
             LCD_REG_CMD);
-    __delay_ms(5);
     /* Display control: 
-     * (D = 0) display off, (C = 0) cursor off, (B = 0) blinking off */
-    LCD_Write((0b00001000 | 0 << DISPLAY_CTRL_D_POS | 0 << DISPLAY_CTRL_C_POS |
+     * (D = 1) display on, (C = 0) cursor off, (B = 0) blinking off */
+    LCD_Write((0b00001000 | 1 << DISPLAY_CTRL_D_POS | 0 << DISPLAY_CTRL_C_POS |
             0 << DISPLAY_CTRL_B_POS), LCD_REG_CMD);
-    __delay_ms(8);
     LCD_Clear();
-    __delay_ms(5);
     /* Entry mode set:
      * (I/D = 1) Increment DDRAM address by 1; moves the cursor to the right,
      * (S = 0) no display shift */
     LCD_Write((0b00000100 | 1 << ENTRY_MODE_ID_POS | 0 << ENTRY_MODE_S_POS),
             LCD_REG_CMD);
-    __delay_ms(5);
-    LCD_Clear();
+    
+    /* Now at this point, the busy bit DB7 can be checked */ 
+    busyBitEnabled = true;
+    
+    
 }
 
 

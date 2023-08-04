@@ -29,6 +29,10 @@
  ******************************************************************************/
 void main(void)
 {
+    
+    _Bool printTestLine = true;
+    volatile uint8_t count;
+    
     // Initialize the device
     SYSTEM_Initialize();
 
@@ -51,12 +55,25 @@ void main(void)
     // Select ADC channel, enable ADC and start conversion
     ADCC_StartConversion(RA0_POT);
     TMR2_Start();
+
+    LCD_Init();
+    __delay_ms(100);
+    LCD_SetCursor(LCD_FIRST_LINE, 1);
+    __delay_ms(100);
     
     while (1)
     {
-        ;
+        
+        LCD_Clear();
+        __delay_ms(1000);
+        LCD_SetCursor(LCD_FIRST_LINE, 1);
+        LCD_PrintString("Hello World");
+        __delay_ms(2000);
     }
 }
+
+
+
 /**
  End of File
 */
