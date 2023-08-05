@@ -99,7 +99,7 @@ static _Bool LCD_IsIdle(void) {
         /* To avoid a hangup in case of the LCD not responding, abort waiting
          * for the busy check bit after a certain number of retry cycles. 
          * In this case we'll still continue, just a bit slower than normally */
-        for (i = MAX_RETRY_COUNT; i > 0; i--){
+        for (i = 0; i < MAX_RETRY_COUNT; i++){
             receivedData = LCD_ReadDataByte();
             if ((receivedData & 0x80) == 0) // check busy bit (DB7)
                 break;

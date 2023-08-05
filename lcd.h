@@ -53,9 +53,10 @@ extern "C" {
 #define LCD_DB6         LATDbits.LATD6
 #define LCD_DB7         LATDbits.LATD7
 #define LCD_DATA_TRIS   TRISD // TRIS register for data pins
-#define LCD_DATA_PORT   PORTD
-
-#define DATA_TRIS_OUTPUT_PATTERN 0x0F // TRIS register: 0 = output, 1 = input 
+#define LCD_DATA_PORT   PORTD // PORT register for data pins
+    
+// Definition of bit TRIS and PORT register pattern for data pins 
+#define DATA_TRIS_OUTPUT_PATTERN 0x0F // TRIS data port pattern (0 = output)
 #define DATA_PORT_INPUT_PATTERN 0xF0 // 1 = data pins used on data port    
 
 /****************************************************************************** 
