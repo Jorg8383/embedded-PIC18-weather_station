@@ -31,8 +31,8 @@
  *    
  */
 
-#ifndef LCD_HD447780_H
-#define	LCD_HD447780_H
+#ifndef LCD_H
+#define	LCD_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -44,15 +44,19 @@ extern "C" {
 #include <string.h>
     
 // Project specific IO mapping
-#define LCD_BL      LATDbits.LATD0  // LCD backlight LED
-#define LCD_RS      LATDbits.LATD1  // Selects register: (0) = instruction, (1) = data
-#define LCD_RW      LATDbits.LATD2  // Selects mode: (0) = write, (1) = read
-#define LCD_EN      LATDbits.LATD3  // Starts data read/write
-#define LCD_DB4     LATDbits.LATD4  
-#define LCD_DB5     LATDbits.LATD5
-#define LCD_DB6     LATDbits.LATD6
-#define LCD_DB7     LATDbits.LATD7
-#define LCD_BUSY    PORTDbits.RD7   // busy flag (when RS = 0 & RW = 1)
+#define LCD_BL          LATDbits.LATD0  // LCD backlight LED
+#define LCD_RS          LATDbits.LATD1  // Selects register: (0) = instruction, (1) = data
+#define LCD_RW          LATDbits.LATD2  // Selects mode: (0) = write, (1) = read
+#define LCD_EN          LATDbits.LATD3  // Starts data read/write
+#define LCD_DB4         LATDbits.LATD4  
+#define LCD_DB5         LATDbits.LATD5
+#define LCD_DB6         LATDbits.LATD6
+#define LCD_DB7         LATDbits.LATD7
+#define LCD_DATA_TRIS   TRISD // TRIS register for data pins
+#define LCD_DATA_PORT   PORTD
+
+#define DATA_TRIS_OUTPUT_PATTERN 0x0F // TRIS register: 0 = output, 1 = input 
+#define DATA_PORT_INPUT_PATTERN 0xF0 // 1 = data pins used on data port    
 
 /****************************************************************************** 
 * LCD instruction register macros 
@@ -82,7 +86,12 @@ extern "C" {
 // Base definitions for integer to string conversion    
 #define INT_BASE_DECIMAL 10 // Base 10 for decimal
 #define INT_BASE_OCTAL 8 // Base 8 for octal
-#define INT_BASE_HEX 16 // Base 16 for hexadecimal    
+#define INT_BASE_HEX 16 // Base 16 for hexadecimal
+
+// Default time delay (us) for triggering read/write instructions
+#define RW_TRIGGER_DELAY 20  
+// If CHECK_BUSY_BIT is set to 1, the busy bit DB7 will be checked
+#define CHECK_BUSY_BIT 1
     
 // Type definitions    
 typedef enum {

@@ -23,16 +23,27 @@
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/adcc.h"
 #include "lcd.h"
+#include "lcd_test.h"
 
 /******************************************************************************
  * Main application
  ******************************************************************************/
 void main(void)
 {
+    mainInit();
     
-    _Bool printTestLine = true;
-    volatile uint8_t count;
-    
+    while (1)
+    {
+        LCD_TestRoutine();
+        
+    }
+}
+
+/******************************************************************************
+ * Main init application
+ ******************************************************************************/
+void mainInit(void){
+
     // Initialize the device
     SYSTEM_Initialize();
 
@@ -57,22 +68,9 @@ void main(void)
     TMR2_Start();
 
     LCD_Init();
-    __delay_ms(100);
-    LCD_SetCursor(LCD_FIRST_LINE, 1);
-    __delay_ms(100);
-    
-    while (1)
-    {
-        
-        LCD_Clear();
-        __delay_ms(1000);
-        LCD_SetCursor(LCD_FIRST_LINE, 1);
-        LCD_PrintString("Hello World");
-        __delay_ms(2000);
-    }
+    __delay_ms(500);
+       
 }
-
-
 
 /**
  End of File

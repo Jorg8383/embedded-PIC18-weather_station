@@ -24,10 +24,11 @@
 static void LCD_TransferNibbleBits(char input);
 static void LCD_Write(char input, LCD_REG_TYPE regType);
 static void LCD_ReverseString(char str[], uint16_t length);
+static void LCD_ReadDataNibble(uint8_t *pReturnValue);
+static uint8_t LCD_ReadDataByte(void);
 static _Bool LCD_IsIdle(void);
 
-static _Bool busyBitEnabled = false;
-uint8_t transferCount = 0;
+static _Bool checkBusyBit;
 
 /******************************************************************************
  * Function: LCD_SendNibbleBits(char input)
@@ -50,16 +51,10 @@ static void LCD_TransferNibbleBits(char input) {
     LCD_DB6 = (input & 0x04) ? 1 : 0;
     LCD_DB7 = (input & 0x08) ? 1 : 0;
 
-//    transferCount++;
-//    printf("Transfer count: %u -- data (hex): %x\n", transferCount, (PORTD & 0xF0) >> 4);
-//    printf("Transfer count: %u -- control: %x\n", transferCount, PORTD & 0x0E);
-    
-    LCD_EN = 1; // Start reading/writing data
-    __delay_us(800);
+    LCD_EN = 1; // Start writing data
+    __delay_us(RW_TRIGGER_DELAY);
     LCD_EN = 0;
-    __delay_us(800);
-       
-  
+    __delay_us(RW_TRIGGER_DELAY);
     
 }
 
@@ -79,12 +74,10 @@ static void LCD_Write(char input, LCD_REG_TYPE regType) {
     LCD_RS = (regType == LCD_REG_CMD) ? 0 : 1; 
     __delay_us(100);
     
-    while (!LCD_IsIdle()); // Check whether LCD is busy
+    while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_TransferNibbleBits((input & 0xF0) >> 4); // transmit upper nibble first
-    while (!LCD_IsIdle()); // wait while LCD is busy
     LCD_TransferNibbleBits(input & 0x0F); // transmit lower nibble second
-    
-    
+     
 }
 
 /******************************************************************************
@@ -98,18 +91,23 @@ static void LCD_Write(char input, LCD_REG_TYPE regType) {
  ******************************************************************************/
 static _Bool LCD_IsIdle(void) {
 
-    _Bool rsState;
-
-    if (busyBitEnabled) {
+    const uint16_t MAX_RETRY_COUNT = 500;
+    uint16_t i;
+    uint8_t receivedData;
     
-        rsState = LCD_RS; // Save RS state before changing it 
-        LCD_RS = 0; // Select instruction register
-        LCD_RW = 1; // Select read mode
-        __delay_ms(2);
-        while (!LCD_DB7); // wait while being busy (DB7 = 1)
-        LCD_RS = rsState; // Restore RS state   
+    if (CHECK_BUSY_BIT) {
+        /* To avoid a hangup in case of the LCD not responding, abort waiting
+         * for the busy check bit after a certain number of retry cycles. 
+         * In this case we'll still continue, just a bit slower than normally */
+        for (i = MAX_RETRY_COUNT; i > 0; i--){
+            receivedData = LCD_ReadDataByte();
+            if ((receivedData & 0x80) == 0) // check busy bit (DB7)
+                break;
+        }
+    } else {
+        __delay_ms(1); // If busy bit isn't enabled then wait a little bit
     } 
-    return true; // If busy bit isn't enabled then return true straight away
+    return true; 
 }
 
 /******************************************************************************
@@ -149,9 +147,7 @@ void LCD_Init(void) {
             LCD_REG_CMD);
     
     /* Now at this point, the busy bit DB7 can be checked */ 
-    busyBitEnabled = true;
-    
-    
+    checkBusyBit = CHECK_BUSY_BIT;
 }
 
 
@@ -165,8 +161,8 @@ void LCD_Init(void) {
  ******************************************************************************/
 void LCD_Clear(void) {
     
+    while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_Write(0x01, LCD_REG_CMD);
-    __delay_ms(2);
 }
 
 
@@ -179,6 +175,7 @@ void LCD_Clear(void) {
  ******************************************************************************/
 void LCD_PrintCharacter(char input) {
   
+    while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_Write(input, LCD_REG_DATA);
 }
 
@@ -219,11 +216,13 @@ void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset) {
             /* 0x80 (MSB = 1) sets the DDRAM address, which positions the cursor
              * in the first line to the very left if offset = 0 */
             temp = 0x80 + offset - 1;
+            while (!LCD_IsIdle()); // wait while LCD is still busy
             LCD_Write(temp, LCD_REG_CMD);
             break;
         case LCD_SECOND_LINE:
             /* Adding 0x40 to 0x80 positions the cursor in the second line */
             temp = 0x80 + 0x40 + offset - 1;
+            while (!LCD_IsIdle()); // wait while LCD is still busy
             LCD_Write(temp, LCD_REG_CMD);            
             break;
         default:
@@ -243,6 +242,7 @@ void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset) {
  ******************************************************************************/
 void LCD_ShiftDisplayRight(void) {
     
+    while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_Write(0x1C, LCD_REG_CMD);
 }
 
@@ -259,6 +259,7 @@ void LCD_ShiftDisplayRight(void) {
  ******************************************************************************/
 void LCD_ShiftDisplayLeft(void) {
     
+    while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_Write(0x18, LCD_REG_CMD);    
 }
 
@@ -334,5 +335,56 @@ static void LCD_ReverseString(char str[], uint16_t length) {
         endPos--;
         startPos++;
     }
+}
+
+
+/******************************************************************************
+ * Function: LCD_ReadDataNibble(uint8_t *pReturnValue)
+ *
+ * Returns: Nothing
+ * 
+ * Description: This routine reads a data nibble from/to the bus-interface. The
+ * read data value is returned via passing a function parameter by reference.
+ ******************************************************************************/
+static void LCD_ReadDataNibble(uint8_t *pReturnValue) {
+    
+    LCD_EN = 1; // Start reading/writing data
+    __delay_us(RW_TRIGGER_DELAY);
+    *pReturnValue = LCD_DATA_PORT & DATA_PORT_INPUT_PATTERN;
+    LCD_EN = 0;
+    __delay_us(RW_TRIGGER_DELAY);
+}
+
+
+/******************************************************************************
+ * Function: LCD_ReadDataByte(void)
+ *
+ * Returns: Data byte as uint8_t
+ * 
+ * Description: This routine reads a data byte from/to the bus-interface.
+ ******************************************************************************/
+static uint8_t LCD_ReadDataByte(void) {
+    
+    _Bool rsStateHistory;
+    uint8_t data, tempData;     
+
+    rsStateHistory = LCD_RS; // Save RS state before changing it
+    LCD_RS = 0; // Select instruction register
+    LCD_RW = 1; // Select read mode
+    LCD_DATA_TRIS |= ~DATA_TRIS_OUTPUT_PATTERN; // set data lines to input       
+    __delay_us(10);
+
+    /* Note that two cycles are needed for the busy flag check as well for
+     * the data transfer */; 
+    LCD_ReadDataNibble(&tempData); // Read higher nibble
+    data = ((tempData << 4) & 0xF0);        
+    LCD_ReadDataNibble(&tempData); // Read lower nibble
+    data |= (tempData & 0x0F);
+
+    LCD_DATA_TRIS &= DATA_TRIS_OUTPUT_PATTERN; // set data lines to output
+    LCD_RW = 0; // Return to default mode of writing data to the LCD
+    LCD_RS = rsStateHistory; // Restore RS state  
+
+    return data;
 }
 
