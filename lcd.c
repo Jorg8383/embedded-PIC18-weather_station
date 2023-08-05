@@ -210,23 +210,23 @@ void LCD_PrintString(const char *input) {
  ******************************************************************************/
 void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset) {
     
-    uint8_t temp;
+    uint8_t value;
     
     switch (line) {
         case LCD_FIRST_LINE:
             /* 0x80 (MSB = 1) sets the DDRAM address, which positions the cursor
              * in the first line to the very left if offset = 0 */
-            while (!LCD_IsIdle()); // wait while LCD is still busy
-            LCD_Write(((offset & 0x7F) | 0x80), LCD_REG_CMD);
+            value = (offset & 0x7F) | 0x80;
             break;
         case LCD_SECOND_LINE:
             /* Adding 0x40 to 0x80 positions the cursor in the second line */
-            while (!LCD_IsIdle()); // wait while LCD is still busy
-            LCD_Write(((offset & 0x7F) | (0x80 + 0x40)), LCD_REG_CMD);
+            value = (offset & 0x7F) | (0x80 + 0x40);
             break;
         default:
             ; // line not defined
         }
+    while (!LCD_IsIdle()); // wait while LCD is still busy
+    LCD_Write(value, LCD_REG_CMD);
     __delay_ms(5);
 }
 

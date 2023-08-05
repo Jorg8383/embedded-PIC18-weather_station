@@ -33,7 +33,7 @@ void LCD_TestRoutine(void) {
     uint8_t i;
 
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, 1);
+    LCD_SetCursor(LCD_FIRST_LINE, 2);
     LCD_PrintString("Hello World");
     LCD_SetCursor(LCD_SECOND_LINE, 1);
     LCD_PrintString("PIC18F47Q10");
@@ -55,7 +55,7 @@ void LCD_TestRoutine(void) {
     __delay_ms(1000);
 
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, 0);
+    LCD_SetCursor(LCD_FIRST_LINE, 6);
     LCD_PrintString("End!");
 
     __delay_ms(1000);
