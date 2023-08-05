@@ -163,6 +163,7 @@ void LCD_Clear(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_Write(0x01, LCD_REG_CMD);
+    __delay_ms(5);
 }
 
 
@@ -215,19 +216,18 @@ void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset) {
         case LCD_FIRST_LINE:
             /* 0x80 (MSB = 1) sets the DDRAM address, which positions the cursor
              * in the first line to the very left if offset = 0 */
-            temp = 0x80 + offset - 1;
             while (!LCD_IsIdle()); // wait while LCD is still busy
-            LCD_Write(temp, LCD_REG_CMD);
+            LCD_Write(((offset & 0x7F) | 0x80), LCD_REG_CMD);
             break;
         case LCD_SECOND_LINE:
             /* Adding 0x40 to 0x80 positions the cursor in the second line */
-            temp = 0x80 + 0x40 + offset - 1;
             while (!LCD_IsIdle()); // wait while LCD is still busy
-            LCD_Write(temp, LCD_REG_CMD);            
+            LCD_Write(((offset & 0x7F) | (0x80 + 0x40)), LCD_REG_CMD);
             break;
         default:
             ; // line not defined
-    }
+        }
+    __delay_ms(5);
 }
 
 /******************************************************************************

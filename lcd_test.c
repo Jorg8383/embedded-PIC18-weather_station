@@ -55,7 +55,7 @@ void LCD_TestRoutine(void) {
     __delay_ms(1000);
 
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, 6);
+    LCD_SetCursor(LCD_FIRST_LINE, 0);
     LCD_PrintString("End!");
 
     __delay_ms(1000);
