@@ -18,8 +18,17 @@
  * 
 */
 
+#include <stdio.h>
+#include <string.h>
 #include "lcd_test.h"
 #include "lcd.h"
+
+char * pDisplayText[] = {
+    "Weather Station",
+    "PIC18F47Q10",
+    "Temperature:",
+    "Pressure:"
+};
 
 /******************************************************************************
  * Function: 
@@ -30,33 +39,39 @@
  ******************************************************************************/
 void LCD_TestRoutine(void) {
     
+    
+    
     uint8_t i;
 
+    printf("String length: %u\n", strlen(pDisplayText[2]));
+
+    
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, 2);
-    LCD_PrintString("Hello World");
-    LCD_SetCursor(LCD_SECOND_LINE, 1);
-    LCD_PrintString("PIC18F47Q10");
+    LCD_SetCursor(LCD_FIRST_LINE, 0);
+    LCD_PrintString(pDisplayText[0]);
+    LCD_SetCursor(LCD_SECOND_LINE, 0);
+    LCD_PrintString(pDisplayText[1]);
 
     __delay_ms(1000);
 
-    // Shift display to the left
+    // Test shifting display to the left
     for (i = 0; i < 15; i++) {
-        __delay_ms(500);
+        __delay_ms(300);
         LCD_ShiftDisplayLeft();
     }
 
-    // Shift display to the right
+    // Test shifting display to the right
     for (i = 0; i < 15; i++) {
-        __delay_ms(500);
+        __delay_ms(300);
         LCD_ShiftDisplayRight();
     }
 
     __delay_ms(1000);
 
+    // Test setting cursor to center the displayed text
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, 6);
-    LCD_PrintString("End!");
+    LCD_SetCursor(LCD_FIRST_LINE, (16 - strlen(pDisplayText[2])) / 2);
+    LCD_PrintString(pDisplayText[2]);
 
     __delay_ms(1000);
         
