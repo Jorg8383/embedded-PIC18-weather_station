@@ -306,41 +306,44 @@ void LCD_ShiftCursorLeft(void) {
  ******************************************************************************/
 void LCD_PrintInteger(int16_t number, uint8_t intBase) {
 
-    char str[10] = {0};
+    char buffer[20] = "";
     uint8_t i = 0;
     uint8_t reminder;
+    int16_t num = number;
     _Bool isNegative = false;
     
     // Handle zero as a number explicitly
     if (number == 0) {
-        str[i++] = '0';
-        str[i] = '\0'; // add null terminating character
-        LCD_PrintString(str); // Print the string on the display
+        buffer[i++] = '0';
+        buffer[i] = '\0'; // add null terminating character
+        LCD_PrintString(buffer); // Print the string on the display
     }
     
     // Handle negative numbers with a base of 10
-    if (number < 0 && intBase == INT_BASE_DECIMAL) {
+    if (num < 0 && intBase == INT_BASE_DECIMAL) {
         isNegative = true;
-        number = number * -1;
+        num = num * -1;
     }
     
     // Extract digits individually
-    while (number != 0) {
+    while (num != 0) {
         // Perform Modulo to get the reminder
-        reminder = number % intBase;
+        reminder = num % intBase;
         /* Add the reminder with an offset either for hex or decimal/octal
          * to the string buffer */
-        str[i++] = (reminder < 9) ? (reminder - 10) + 'a' : reminder + '0';
-        number = number / intBase;
+        buffer[i++] = (reminder > 9) ? (reminder - 10) + 'a' : reminder + '0';
+        num = num / intBase;
     }
     
     // Append sign if number is negative
     if (isNegative)
-        str[i++] = '-';
+        buffer[i++] = '-';
     
-    str[i] = '\0'; // Append a null terminating character
-    LCD_ReverseString(str, i);
-    LCD_PrintString(str); // Print the string on the display
+    buffer[i] = '\0'; // Append a null terminating character
+    printf("Number %i as string: %s\n", number, buffer);
+    LCD_ReverseString(buffer, i);
+    printf("Number %i as string reversed: %s\n", number, buffer);
+    LCD_PrintString(buffer); // Print the string on the display
     
 }
 
