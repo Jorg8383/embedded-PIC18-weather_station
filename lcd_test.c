@@ -128,14 +128,13 @@ static void testPrintInteger(void) {
     const uint8_t posUint8 = 200;
     const int16_t negUint16 = -27800;
     const int8_t negUint8 = -8;
-
-    
     
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, 0);
     LCD_PrintString(pDisplayText[4]);    
+    LCD_ShiftCursorRight();
     LCD_PrintInteger(hexValue, INT_BASE_HEX);
-    __delay_ms(2000);
+    __delay_ms(4000);
         
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, 0);
@@ -146,7 +145,7 @@ static void testPrintInteger(void) {
     LCD_PrintString(pDisplayText[6]);    
     LCD_ShiftCursorRight();
     LCD_PrintInteger(posUint8, INT_BASE_DECIMAL);
-    __delay_ms(2000);
+    __delay_ms(4000);
     
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, 0);
@@ -157,7 +156,7 @@ static void testPrintInteger(void) {
     LCD_PrintString(pDisplayText[8]);    
     LCD_ShiftCursorRight();
     LCD_PrintInteger(negUint8, INT_BASE_DECIMAL);
-    __delay_ms(2000);    
+    __delay_ms(4000);    
 }
 
 
