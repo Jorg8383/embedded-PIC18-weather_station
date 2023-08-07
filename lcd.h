@@ -11,14 +11,17 @@
  
  * Program Description:
  * --------------------
- * This header file declares routines for controlling the Hitachi HD44780
- * LCD 16x2 display via a 4-bit interface, where one data byte is transferred
- * sequentially by four bus-lines (DB4...DB7). First the higher nibble (4-bit)
- * data is transferred, followed by the lower nibble.
+ * This header file represents an Application Programming Interface (API) for
+ * the LCD of the Hitachi HD44780 (16x2 lines), allowing it to interoperate with
+ * a PIC18F47Q10 microcontroller. The communication between the display and 
+ * controller is realised via a 4-bit interface, thus transmitting one data byte
+ * as two sequential 4-bit transfers. For the 4-bit interface, only four bus 
+ * lines (DB4 to DB7) are used for transfer.
  * 
  * Hardware Description:
  * --------------------
- * The Curiosity HPC board is wired to the HD44780 display as follows:
+ * The Curiosity HPC with a PIC18F47Q10 MCU on board is wired to the HD44780 
+ * display as follows:
  * 
  * RD0  ---->   LED+ (pin 16)   LCD backlight
  * RD1  ---->   RS (pin 4)      Selecting register: 1 = data, 2 = instruction
@@ -42,6 +45,7 @@ extern "C" {
 #include "mcc_generated_files/mcc.h"
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
     
 // Project specific IO mapping
 #define LCD_BL          LATDbits.LATD0  // LCD backlight LED

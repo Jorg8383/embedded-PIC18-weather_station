@@ -11,10 +11,17 @@
  * Program version:     1.0
  
  * Program Description:
- * xxx
+ * This module represents an Application Programming Interface (API) for the LCD
+ * of the Hitachi HD44780 (16x2 lines), allowing it to interoperate with a 
+ * PIC18F47Q10 microcontroller. The communication between the display and 
+ * controller is realised via a 4-bit interface, thus transmitting one data byte
+ * as two sequential 4-bit transfers. For the 4-bit interface, only four bus 
+ * lines (DB4 to DB7) are used for transfer.
+ * 
  * 
  * Hardware Description:
- * xxx
+ * MCU: PIC18F47Q10
+ * LCD: Hitachi HD44780 (16 x 2 lines)
  * 
 */
 
@@ -340,16 +347,13 @@ void LCD_PrintInteger(int16_t number, uint8_t intBase) {
         buffer[i++] = '-';
     
     buffer[i] = '\0'; // Append a null terminating character
-    printf("Number %i as string: %s\n", number, buffer);
     LCD_ReverseString(buffer, i);
-    printf("Number %i as string reversed: %s\n", number, buffer);
-    LCD_PrintString(buffer); // Print the string on the display
-    
+    LCD_PrintString(buffer); // Print the string on the display   
 }
 
 
 /******************************************************************************
- * Function: reverseString(char str[], uint16_t length)
+ * Function: LCD_ReverseString(char str[], uint16_t length)
  *
  * Returns: Nothing
  * 
