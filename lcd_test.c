@@ -36,24 +36,25 @@ char *pDisplayText[] = {
 };
 
 // Function prototypes
-static void testPrintStringInFirstLine(void);
-static void testPrintStringInSecondLine(void);
-static void testPrintStringCentered(void);
+static void testPrintStringInFirstLine(uint8_t textIndex);
+static void testPrintStringInSecondLine(uint8_t textIndex);
+static void testPrintStringCentered(uint8_t textIndex);
 static void testPrintCharInFirstLine(void);
 static void testPrintInteger(void);
 static void testShiftDisplayLeft(void);
 static void testShiftDisplayRight(void);
+static void testShiftCursor(void);
 
 
 /******************************************************************************
- * Function: 
+ * Function: Test routine
  * 
  * Returns: Nothing
  * 
  * Description: 
  ******************************************************************************/
 void LCD_TestRoutine(void) {
-    
+
 //    LCD_Clear();
 //    testPrintStringInFirstLine();
 //    testPrintStringInSecondLine();
@@ -67,25 +68,25 @@ void LCD_TestRoutine(void) {
     testPrintInteger();
 }
 
-static void testPrintStringInFirstLine(void) {
+static void testPrintStringInFirstLine(uint8_t textIndex) {
     
     LCD_SetCursor(LCD_FIRST_LINE, 0);
-    LCD_PrintString(pDisplayText[0]);    
+    LCD_PrintString(pDisplayText[textIndex]);    
 }
 
 
-static void testPrintStringInSecondLine(void) {
+static void testPrintStringInSecondLine(uint8_t textIndex) {
 
     LCD_SetCursor(LCD_SECOND_LINE, 0);
-    LCD_PrintString(pDisplayText[1]);    
+    LCD_PrintString(pDisplayText[textIndex]);    
 }
 
 
-static void testPrintStringCentered(void) {
+static void testPrintStringCentered(uint8_t textIndex) {
     
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, (uint8_t) (16 - strlen(pDisplayText[2])) / 2);
-    LCD_PrintString(pDisplayText[2]);
+    LCD_PrintString(pDisplayText[textIndex]);
     __delay_ms(2000);
 }
 
@@ -123,9 +124,9 @@ static void testPrintCharInFirstLine(void) {
 static void testPrintInteger(void) {
     
     const uint16_t hexValue = 0x78FC;
-    const uint16_t posUint16 = 65536;
-    const uint8_t posUint8 = 255;
-    const int16_t negUint16 = 27800;
+    const uint16_t posUint16 = 4939;
+    const uint8_t posUint8 = 200;
+    const int16_t negUint16 = -27800;
     const int8_t negUint8 = -8;
 
     
@@ -138,19 +139,43 @@ static void testPrintInteger(void) {
         
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, 0);
-    LCD_PrintString(pDisplayText[5]);    
+    LCD_PrintString(pDisplayText[5]);
+    LCD_ShiftCursorRight();
     LCD_PrintInteger(posUint16, INT_BASE_DECIMAL);
     LCD_SetCursor(LCD_SECOND_LINE, 0);
     LCD_PrintString(pDisplayText[6]);    
+    LCD_ShiftCursorRight();
     LCD_PrintInteger(posUint8, INT_BASE_DECIMAL);
     __delay_ms(2000);
     
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, 0);
     LCD_PrintString(pDisplayText[7]);    
+    LCD_ShiftCursorRight();
     LCD_PrintInteger(negUint16, INT_BASE_DECIMAL);
     LCD_SetCursor(LCD_SECOND_LINE, 0);
     LCD_PrintString(pDisplayText[8]);    
+    LCD_ShiftCursorRight();
     LCD_PrintInteger(negUint8, INT_BASE_DECIMAL);
     __delay_ms(2000);    
+}
+
+
+static void testShiftCursor(void) {
+
+    // Test shift cursor right
+    LCD_Clear();
+    testPrintStringInFirstLine(3);
+    LCD_ShiftCursorRight();
+    LCD_PrintCharacter('x');
+    __delay_ms(3000);
+
+    // Test shift cursor left
+    LCD_Clear();
+    LCD_SetCursor(LCD_SECOND_LINE, 8);
+    LCD_PrintCharacter('y');
+    LCD_ShiftCursorLeft();
+    LCD_ShiftCursorLeft();
+    LCD_PrintCharacter('x');    
+    __delay_ms(3000);  
 }
