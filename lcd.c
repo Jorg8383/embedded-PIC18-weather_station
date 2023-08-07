@@ -265,6 +265,36 @@ void LCD_ShiftDisplayLeft(void) {
 
 
 /******************************************************************************
+ * Function: LCD_ShiftCursorRight(void)
+ *
+ * Returns: Nothing
+ * 
+ * Description: This routine shifts the cursor by one position to the right 
+ * without changing DDRAM contents
+ ******************************************************************************/
+void LCD_ShiftCursorRight(void) {
+    
+    while (!LCD_IsIdle()); // wait while LCD is still busy
+    LCD_Write(0x14, LCD_REG_CMD);
+}
+
+
+/******************************************************************************
+ * Function: LCD_ShiftCursorRight(void)
+ *
+ * Returns: Nothing
+ * 
+ * Description: This routine shifts the cursor by one position to the left 
+ * without changing DDRAM contents
+ ******************************************************************************/
+void LCD_ShiftCursorLeft(void) {
+    
+    while (!LCD_IsIdle()); // wait while LCD is still busy
+    LCD_Write(0x10, LCD_REG_CMD);
+}
+
+
+/******************************************************************************
  * Function: LCD_PrintInteger(int16_t number, uint8_t intBase)
  *
  * Returns: Nothing

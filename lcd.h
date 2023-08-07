@@ -111,6 +111,8 @@ extern void LCD_Clear(void);
 extern void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset);
 extern void LCD_ShiftDisplayRight(void);
 extern void LCD_ShiftDisplayLeft(void);
+extern void LCD_ShiftCursorRight(void);
+extern void LCD_ShiftCursorLeft(void);
 extern void LCD_PrintCharacter(char input);
 extern void LCD_PrintString(const char *input);
 extern void LCD_PrintInteger(int16_t number, uint8_t intBase);
