@@ -26,9 +26,17 @@
 char * pDisplayText[] = {
     "Weather Station",
     "PIC18F47Q10",
-    "Temperature:",
+    "Centered",
     "Pressure:"
 };
+
+// Function prototypes
+static void testPrintStringInFirstLine(void);
+static void testPrintStringInSecondLine(void);
+static void testPrintStringCentered(void);
+static void testShiftDisplayLeft(void);
+static void testShiftDisplayRight(void);
+
 
 /******************************************************************************
  * Function: 
@@ -39,43 +47,58 @@ char * pDisplayText[] = {
  ******************************************************************************/
 void LCD_TestRoutine(void) {
     
-    
-    
-    uint8_t i;
+    LCD_Clear();
+    testPrintStringInFirstLine();
+    testPrintStringInSecondLine();
+    __delay_ms(1000);
+    testShiftDisplayLeft();
+    testShiftDisplayRight();
+    __delay_ms(1000);
+    LCD_Clear();
+    testPrintStringCentered();
+    __delay_ms(1000);
+        
+}
 
-    printf("String length: %u\n", strlen(pDisplayText[2]));
+static void testPrintStringInFirstLine(void) {
+    
+    LCD_SetCursor(LCD_FIRST_LINE, 0);
+    LCD_PrintString(pDisplayText[0]);    
+}
 
+
+static void testPrintStringInSecondLine(void) {
+
+    LCD_SetCursor(LCD_SECOND_LINE, 0);
+    LCD_PrintString(pDisplayText[1]);    
+}
+
+
+static void testPrintStringCentered(void) {
     
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, 0);
-    LCD_PrintString(pDisplayText[0]);
-    LCD_SetCursor(LCD_SECOND_LINE, 0);
-    LCD_PrintString(pDisplayText[1]);
+    LCD_SetCursor(LCD_FIRST_LINE, (uint8_t) (16 - strlen(pDisplayText[2])) / 2);
+    LCD_PrintString(pDisplayText[2]);
+}
 
-    __delay_ms(1000);
-
+static void testShiftDisplayLeft(void) {
+    uint8_t i;
+    
     // Test shifting display to the left
     for (i = 0; i < 15; i++) {
         __delay_ms(300);
         LCD_ShiftDisplayLeft();
     }
-
+}
+static void testShiftDisplayRight(void) {
+    uint8_t i;
+    
     // Test shifting display to the right
     for (i = 0; i < 15; i++) {
         __delay_ms(300);
         LCD_ShiftDisplayRight();
     }
-
-    __delay_ms(1000);
-
-    // Test setting cursor to center the displayed text
-    LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, (16 - strlen(pDisplayText[2])) / 2);
-    LCD_PrintString(pDisplayText[2]);
-
-    __delay_ms(1000);
-        
 }
-        
+
 
 
