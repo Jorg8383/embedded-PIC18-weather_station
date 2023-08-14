@@ -56,29 +56,54 @@ typedef enum {
 #define BMP180_CONV_TIME_P_OSS_3            26  
 
 /* Register addresses for calibration coefficients */
-#define BMP180_CAL_DATA_SIZE                22 // in bytes
-#define BMP180_CAL_COEFF_AC1_MSB            0xAA    
-#define BMP180_CAL_COEFF_AC1_LSB            0xAB
-#define BMP180_CAL_COEFF_AC2_MSB            0xAC
-#define BMP180_CAL_COEFF_AC2_LSB            0xAD
-#define BMP180_CAL_COEFF_AC3_MSB            0xAE
-#define BMP180_CAL_COEFF_AC3_LSB            0xAF
-#define BMP180_CAL_COEFF_AC4_MSB            0xB0
-#define BMP180_CAL_COEFF_AC4_LSB            0xB1
-#define BMP180_CAL_COEFF_AC5_MSB            0xB2
-#define BMP180_CAL_COEFF_AC5_LSB            0xB3
-#define BMP180_CAL_COEFF_AC6_MSB            0xB4
-#define BMP180_CAL_COEFF_AC6_LSB            0xB5
-#define BMP180_CAL_COEFF_B1_MSB             0xB6
-#define BMP180_CAL_COEFF_B1_LSB             0xB7
-#define BMP180_CAL_COEFF_B2_MSB             0xB8
-#define BMP180_CAL_COEFF_B2_LSB             0xB9
-#define BMP180_CAL_COEFF_MB_MSB             0xBA
-#define BMP180_CAL_COEFF_MB_LSB             0xBB
-#define BMP180_CAL_COEFF_MC_MSB             0xBC
-#define BMP180_CAL_COEFF_MC_LSB             0xBD
-#define BMP180_CAL_COEFF_MD_MSB             0xBE
-#define BMP180_CAL_COEFF_MD_LSB             0xBF
+//#define BMP180_CAL_DATA_SIZE                22 // in bytes
+//#define BMP180_CAL_COEFF_AC1_MSB            0xAA    
+//#define BMP180_CAL_COEFF_AC1_LSB            0xAB
+//#define BMP180_CAL_COEFF_AC2_MSB            0xAC
+//#define BMP180_CAL_COEFF_AC2_LSB            0xAD
+//#define BMP180_CAL_COEFF_AC3_MSB            0xAE
+//#define BMP180_CAL_COEFF_AC3_LSB            0xAF
+//#define BMP180_CAL_COEFF_AC4_MSB            0xB0
+//#define BMP180_CAL_COEFF_AC4_LSB            0xB1
+//#define BMP180_CAL_COEFF_AC5_MSB            0xB2
+//#define BMP180_CAL_COEFF_AC5_LSB            0xB3
+//#define BMP180_CAL_COEFF_AC6_MSB            0xB4
+//#define BMP180_CAL_COEFF_AC6_LSB            0xB5
+//#define BMP180_CAL_COEFF_B1_MSB             0xB6
+//#define BMP180_CAL_COEFF_B1_LSB             0xB7
+//#define BMP180_CAL_COEFF_B2_MSB             0xB8
+//#define BMP180_CAL_COEFF_B2_LSB             0xB9
+//#define BMP180_CAL_COEFF_MB_MSB             0xBA
+//#define BMP180_CAL_COEFF_MB_LSB             0xBB
+//#define BMP180_CAL_COEFF_MC_MSB             0xBC
+//#define BMP180_CAL_COEFF_MC_LSB             0xBD
+//#define BMP180_CAL_COEFF_MD_MSB             0xBE
+//#define BMP180_CAL_COEFF_MD_LSB             0xBF
+
+/* Array definition of the calibration coefficients */
+#define BMP180_CAL_DATA_SIZE            22 // Bytes
+#define BMP180_CAL_COEFF_AC1_MSB        0
+#define BMP180_CAL_COEFF_AC1_LSB        1
+#define BMP180_CAL_COEFF_AC2_MSB        2
+#define BMP180_CAL_COEFF_AC2_LSB        3 
+#define BMP180_CAL_COEFF_AC3_MSB        4
+#define BMP180_CAL_COEFF_AC3_LSB        5
+#define BMP180_CAL_COEFF_AC4_MSB        6
+#define BMP180_CAL_COEFF_AC4_LSB        7
+#define BMP180_CAL_COEFF_AC5_MSB        8
+#define BMP180_CAL_COEFF_AC5_LSB        9
+#define BMP180_CAL_COEFF_AC6_MSB        10
+#define BMP180_CAL_COEFF_AC6_LSB        11
+#define BMP180_CAL_COEFF_B1_MSB         12
+#define BMP180_CAL_COEFF_B1_LSB         13
+#define BMP180_CAL_COEFF_B2_MSB         14
+#define BMP180_CAL_COEFF_B2_LSB         15
+#define BMP180_CAL_COEFF_MB_MSB         16
+#define BMP180_CAL_COEFF_MB_LSB         17
+#define BMP180_CAL_COEFF_MC_MSB         18
+#define BMP180_CAL_COEFF_MC_LSB         19
+#define BMP180_CAL_COEFF_MD_MSB         20
+#define BMP180_CAL_COEFF_MD_LSB         21
 
 /* Data structure that holds device specific calibration parameters */
 typedef struct bmp180_cal_coeff_t
@@ -111,7 +136,7 @@ typedef struct bmp180_param_t
 
 
 /* Function prototype declarations */
-void BMP180_Init(BMP180_PARAM *param);
+uint8_t BMP180_Init(BMP180_PARAM *param);
 uint16_t BMP180_ReadUncompensatedTemperature(void);
 uint32_t BMP180_ReadUncompensatedPressure(void);
 int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature);
