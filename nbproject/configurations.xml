@@ -26,6 +26,7 @@
       </logicalFolder>
       <itemPath>lcd.h</itemPath>
       <itemPath>lcd_test.h</itemPath>
+      <itemPath>bmp180.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
