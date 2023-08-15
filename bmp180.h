@@ -31,7 +31,8 @@ typedef enum {
 } BMP180_PRESSURE_MODE;
 
 /* Data registers to operate the BMP180 */
-#define BMP180_REG_CHIP_ID                  0xD0 // Value is fixed to 0x55
+#define BMP180_REG_CHIP_ID                  0xD0
+#define BMP180_REG_CHIP_ID_VALUE            0x55 // fixed chip-id value 
 
 #define BMP180_REG_SOFT_RESET               0xE0
 #define BMP180_REG_CTRL_MEAS                0xF4
@@ -41,19 +42,19 @@ typedef enum {
 
 /* Control register values for different oversampling settings (oss) */
 #define BMP180_CTRL_VAL_TEMPERATURE         0x2E // Temperature
-#define BMP180_CTRL_VAL_PRESSURE_OSS_0      0x34 // Pressure (oss = 0)
-#define BMP180_CTRL_VAL_PRESSURE_OSS_1      0x74 // Pressure (oss = 1)
-#define BMP180_CTRL_VAL_PRESSURE_OSS_2      0xB4 // Pressure (oss = 2)
-#define BMP180_CTRL_VAL_PRESSURE_OSS_3      0xF4 // Pressure (oss = 3)
+#define BMP180_CTRL_REG_VAL_OSS_0           0x34 // Pressure (oss = 0)
+#define BMP180_CTRL_REG_VAL_OSS_1           0x74 // Pressure (oss = 1)
+#define BMP180_CTRL_REG_VAL_OSS_2           0xB4 // Pressure (oss = 2)
+#define BMP180_CTRL_REG_VAL_OSS_3           0xF4 // Pressure (oss = 3)
 
 /* Note: According to the BMP180 data sheet, the max. conversion time depends
  * on the oversampling setting (oss). For oss = 0 the max. conversion time is
  * 5 ms */
 #define BMP180_CONV_TIME_TEMPERATURE        5 // Temperature conversion time [ms]
-#define BMP180_CONV_TIME_P_OSS_0            5 // Pressure conversion time [ms] 
-#define BMP180_CONV_TIME_P_OSS_1            8 
-#define BMP180_CONV_TIME_P_OSS_2            14  
-#define BMP180_CONV_TIME_P_OSS_3            26  
+#define BMP180_CONV_TIME_OSS_0              5 // Pressure conversion time [ms] 
+#define BMP180_CONV_TIME_OSS_1              8 
+#define BMP180_CONV_TIME_OSS_2              14  
+#define BMP180_CONV_TIME_OSS_3              26  
 
 /* Register addresses for calibration coefficients */
 #define BMP180_CAL_DATA_SIZE                22 // in bytes
@@ -112,7 +113,7 @@ typedef struct bmp180_param_t
 
 
 /* Function prototype declarations */
-uint8_t BMP180_Init(BMP180_PARAM *param);
+uint8_t BMP180_Init(BMP180_PARAM *bmp180);
 uint16_t BMP180_ReadUncompensatedTemperature(void);
 uint32_t BMP180_ReadUncompensatedPressure(void);
 int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature);
