@@ -33,12 +33,17 @@ static BMP180_PARAM *pBMP180;
  * Description: 
  ******************************************************************************/
 uint8_t BMP180_Init(BMP180_PARAM *param) {
+
+    // Define the array that holds the calibration parameters
+    uint8_t calibParameters[BMP180_CAL_DATA_SIZE] = {0};
     
     // Assign BMP180 to internal global pointer variable
     if (param == 0)
         return 1 // Return error value 1 == null pointer
     pBMP180 = param;
 
+    
+    
     
 }
 
