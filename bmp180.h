@@ -28,7 +28,7 @@ typedef enum {
     BMP180_MODE_STANDARD,               
     BMP180_MODE_HIGHRESOLUTION,          
     BMP180_MODE_ULTRAHIGHRESOLUTION    
-} BMP180_PRESSURE_MODE;
+} BMP180_OVERSAMPLING;
 
 /* Data registers to operate the BMP180 */
 #define BMP180_REG_CHIP_ID                  0xD0
@@ -41,16 +41,16 @@ typedef enum {
 #define BMP180_REG_OUT_XLSB                 0xF8
 
 /* Control register values for different oversampling settings (oss) */
-#define BMP180_CTRL_VAL_TEMPERATURE         0x2E // Temperature
-#define BMP180_CTRL_REG_VAL_OSS_0           0x34 // Pressure (oss = 0)
-#define BMP180_CTRL_REG_VAL_OSS_1           0x74 // Pressure (oss = 1)
-#define BMP180_CTRL_REG_VAL_OSS_2           0xB4 // Pressure (oss = 2)
-#define BMP180_CTRL_REG_VAL_OSS_3           0xF4 // Pressure (oss = 3)
+#define BMP180_CTRL_MEAS_VAL_TEMP           0x2E // Temperature
+#define BMP180_CTRL_MEAS_VAL_OSS_0          0x34 // Pressure (oss = 0)
+#define BMP180_CTRL_MEAS_VAL_OSS_1          0x74 // Pressure (oss = 1)
+#define BMP180_CTRL_MEAS_VAL_OSS_2          0xB4 // Pressure (oss = 2)
+#define BMP180_CTRL_MEAS_VAL_OSS_3          0xF4 // Pressure (oss = 3)
 
 /* Note: According to the BMP180 data sheet, the max. conversion time depends
  * on the oversampling setting (oss). For oss = 0 the max. conversion time is
  * 5 ms */
-#define BMP180_CONV_TIME_TEMPERATURE        5 // Temperature conversion time [ms]
+#define BMP180_CONV_TIME_TEMP               5 // Temperature conversion time [ms]
 #define BMP180_CONV_TIME_OSS_0              5 // Pressure conversion time [ms] 
 #define BMP180_CONV_TIME_OSS_1              8 
 #define BMP180_CONV_TIME_OSS_2              14  
@@ -81,6 +81,15 @@ typedef enum {
 #define BMP180_CAL_COEFF_MD_MSB             0xBE
 #define BMP180_CAL_COEFF_MD_LSB             0xBF
 
+/* Constants */
+#define BMP180_TEMPERATURE_DATA_BYTES       2
+#define BMP180_PRESSURE_DATA_BYTES          3
+#define BMP180_TEMPERATURE_DATA_LSB         1
+#define BMP180_TEMPERATURE_DATA_MSB         0
+#define BMP180_PRESSURE_DATA_MSB            0
+#define BMP180_PRESSURE_DATA_LSB            1
+#define BMP180_PRESSURE_DATA_XLSB           2 
+#define BMP180_INVALID_DATA                 0
 
 /* Data structure that holds device specific calibration parameters */
 typedef struct bmp180_cal_coeff_t
@@ -103,9 +112,8 @@ typedef struct bmp180_cal_coeff_t
 typedef struct bmp180_param_t
 {
     BMP180_CAL_COEFF        calibParam;
-    BMP180_PRESSURE_MODE    oversampling;
+    BMP180_OVERSAMPLING     oversampling;
     uint8_t                 ossCtrlRegValue;
-    uint32_t                ossConversionTime;
     uint8_t                 chipId;
     uint8_t                 deviceAddr;
     int32_t                 paramB5;
