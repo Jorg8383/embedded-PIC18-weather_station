@@ -19,7 +19,7 @@
  * 
 */
 
-#include <stdio.h>
+#include "mcc_generated_files/mcc.h"
 #include "bmp180.h"
 
 /* Internal global variables */
@@ -39,7 +39,7 @@ uint8_t BMP180_Init(BMP180_PARAM *param) {
     
     // Assign BMP180 to internal global pointer variable
     if (param == 0)
-        return 1 // Return error value 1 == null pointer
+        return 1; // Return error value 1 == null pointer
     pBMP180 = param;
 
     
