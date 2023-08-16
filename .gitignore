@@ -19,7 +19,7 @@
 **/nbproject/Makefile-*
 **/nbproject/Package-*
 **/nbproject/Makefile-genesis.properties
-**/queuelogs/
+**/queuelogs
 
 # MCC specific
 **/*mc3.bak*
