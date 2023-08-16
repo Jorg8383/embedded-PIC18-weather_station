@@ -25,6 +25,9 @@
 /* Internal global variables */
 static BMP180_PARAM *pBMP180;
 
+/* Internal function prototypes */
+static int32_t calcParamB5(uint16_t rawTemperature);
+
 /******************************************************************************
  * Function: uint8_t BMP180_Init(BMP180_PARAM *bmp180)
  *
@@ -99,10 +102,10 @@ uint8_t BMP180_Init(BMP180_PARAM *bmp180) {
  * 
  * Description: 
  ******************************************************************************/
-uint16_t BMP180_ReadUncompensatedTemperature(void) {
+uint16_t BMP180_ReadRawTemperature(void) {
     
     uint8_t dataBytes[BMP180_TEMPERATURE_DATA_BYTES] = {0};
-    uint16_t ut = 0; // uncompensated temperature UT
+    uint16_t rawTemperature = 0; // uncompensated temperature UT
     
     /* Write value to oversampling control register */
     i2c_write1ByteRegister(BMP180_I2C_ADDR, BMP180_REG_CTRL_MEAS, 
@@ -115,10 +118,10 @@ uint16_t BMP180_ReadUncompensatedTemperature(void) {
     i2c_readNBytes(BMP180_I2C_ADDR, dataBytes, sizeof(dataBytes));
 
     /* Typecast data array to temperature variable */
-    ut = (uint16_t)(dataBytes[BMP180_TEMPERATURE_DATA_MSB] << 8 
+    rawTemperature = (uint16_t)(dataBytes[BMP180_TEMPERATURE_DATA_MSB] << 8 
             | dataBytes[BMP180_TEMPERATURE_DATA_LSB]);
     
-    return ut;
+    return rawTemperature;
 }
 
 
@@ -129,10 +132,10 @@ uint16_t BMP180_ReadUncompensatedTemperature(void) {
  * 
  * Description: 
  ******************************************************************************/
-uint32_t BMP180_ReadUncompensatedPressure(void) {
+uint32_t BMP180_ReadRawPressure(void) {
     
     uint8_t dataBytes[BMP180_PRESSURE_DATA_BYTES] = {0};
-    uint32_t up = 0; // uncompensated pressure data UP
+    uint32_t rawPressure = 0; // uncompensated pressure data UP
     
     /* Write value to oversampling control register */
     i2c_write1ByteRegister(BMP180_I2C_ADDR, BMP180_REG_CTRL_MEAS, 
@@ -158,14 +161,14 @@ uint32_t BMP180_ReadUncompensatedPressure(void) {
     i2c_readNBytes(BMP180_I2C_ADDR, dataBytes, sizeof(dataBytes));
 
     /* Typecast data array to pressure variable */
-    up = (uint32_t)((((uint32_t)dataBytes[BMP180_PRESSURE_DATA_MSB] << 16) |
-            ((uint32_t)dataBytes[BMP180_PRESSURE_DATA_LSB] << 8) |
-            (uint32_t)dataBytes[BMP180_PRESSURE_DATA_XLSB]) >> 
-            (8 - pBMP180->oversampling));
+    rawPressure = 
+            (uint32_t)((((uint32_t)dataBytes[BMP180_PRESSURE_DATA_MSB] << 16)
+            | ((uint32_t)dataBytes[BMP180_PRESSURE_DATA_LSB] << 8)
+            | (uint32_t)dataBytes[BMP180_PRESSURE_DATA_XLSB])
+            >> (8 - pBMP180->oversampling));
 
-    return up;
+    return rawPressure;
 }
-
 
 /******************************************************************************
  * Function: 
@@ -177,15 +180,13 @@ uint32_t BMP180_ReadUncompensatedPressure(void) {
  * X1 = (UT - AC6) * AC5 / 2^15
  * X2 = MC * 2^11 / (X1 + MD)
  * B5 = X1 + X2
- * T = (B5 + 8) / 2^4
  ******************************************************************************/
-int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature) {
-    
-    int16_t temperature = 0;
+static int32_t calcParamB5(uint16_t rawTemperature) {
+
     int32_t x1 = 0; 
     int32_t x2 = 0;
     
-    x1 = (((int32_t) uncompensatedTemperature 
+    x1 = (((int32_t) rawTemperature 
             - (int32_t) pBMP180->calibParam.ac6)
             * (int32_t) pBMP180->calibParam.ac5) >> 15;
     
@@ -193,8 +194,23 @@ int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature) {
         return 0; // return to avoid zero division
     
     x2 = ((int32_t) pBMP180->calibParam.mc << 11) / (x1 + pBMP180->calibParam.md);
-    pBMP180->paramB5 = x1 + x2;
-    temperature = (pBMP180->paramB5 + 8) >> 4;
+    return x1 + x2;    
+}
+
+
+/******************************************************************************
+ * Function: 
+ *
+ * Returns: 
+ * 
+ * Description: According to the manual (BMP180 data sheet rev 1.2), the 
+ * temperature is calculated as follows:
+ * T = (B5 + 8) / 2^4
+ ******************************************************************************/
+int16_t BMP180_CalcTemperature(uint16_t rawTemperature) {
+    
+    int16_t temperature = 0;
+    temperature = (int16_t)((calcParamB5(rawTemperature) + 8) >> 4);
     
     return temperature;
 }
@@ -205,8 +221,9 @@ int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature) {
  *
  * Returns: 
  * 
- * Description: According to the manual (BMP180 data sheet rev 1.2), the 
- * pressure is calculated as follows:
+ * Description: 
+ * According to the manual (BMP180 data sheet rev 1.2), the pressure is 
+ * calculated as follows:
  * B6 = B5 - 4000
  * X1 = (B2 * (B6 * B6 / 2^12)) / 2^11
  * X2 = AC2 * B6 / 2^11
@@ -227,7 +244,7 @@ int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature) {
  * p = p + (X1 + X2 + 3791) / 2^4
  * 
  ******************************************************************************/
-int32_t BMP180_CalcPressure(uint32_t uncompensatedPressure) {
+int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature) {
     
     int32_t pressure = 0;
     int32_t x1 = 0;
@@ -239,7 +256,7 @@ int32_t BMP180_CalcPressure(uint32_t uncompensatedPressure) {
     uint32_t b7 = 0;
     
     /* Calculate B6 */
-    b6 = pBMP180->paramB5 - 4000;
+    b6 = calcParamB5(rawTemperature) - 4000;
     
     /* Calculate B3 */
     x1 = (pBMP180->calibParam.b2 * ((b6 * b6) >> 12)) >> 11;
@@ -255,7 +272,7 @@ int32_t BMP180_CalcPressure(uint32_t uncompensatedPressure) {
     b4 = (pBMP180->calibParam.ac4 * (uint32_t)(x3 + 32768)) >> 15;
     
     /* Calculate B7 */
-    b7 = ((uint32_t)(uncompensatedPressure - b3))
+    b7 = ((uint32_t)(rawPressure - b3))
             * (50000 >> pBMP180->oversampling);
    
     

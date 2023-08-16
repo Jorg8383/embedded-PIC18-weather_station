@@ -116,16 +116,15 @@ typedef struct bmp180_param_t
     uint8_t                 ossCtrlRegValue;
     uint8_t                 chipId;
     uint8_t                 deviceAddr;
-    int32_t                 paramB5;
 } BMP180_PARAM; 
 
 
 /* Function prototype declarations */
 uint8_t BMP180_Init(BMP180_PARAM *bmp180);
-uint16_t BMP180_ReadUncompensatedTemperature(void);
-uint32_t BMP180_ReadUncompensatedPressure(void);
-int16_t BMP180_CalcTemperature(uint16_t uncompensatedTemperature);
-int32_t BMP180_CalcPressure(uint32_t uncompensatedPressure);
+uint16_t BMP180_ReadRawTemperature(void);
+uint32_t BMP180_ReadRawPressure(void);
+int16_t BMP180_CalcTemperature(uint16_t rawTemperature);
+int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature);
 
 
 #ifdef	__cplusplus
