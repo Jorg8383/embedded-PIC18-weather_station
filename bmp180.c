@@ -26,7 +26,7 @@
 static BMP180_PARAM *pBMP180;
 
 /* Internal function prototypes */
-static int32_t calcParamB5(uint16_t rawTemperature);
+static int32_t calcB5(uint16_t rawTemperature);
 
 /******************************************************************************
  * Function: uint8_t BMP180_Init(BMP180_PARAM *bmp180)
@@ -181,7 +181,7 @@ uint32_t BMP180_ReadRawPressure(void) {
  * X2 = MC * 2^11 / (X1 + MD)
  * B5 = X1 + X2
  ******************************************************************************/
-static int32_t calcParamB5(uint16_t rawTemperature) {
+static int32_t calcB5(uint16_t rawTemperature) {
 
     int32_t x1 = 0; 
     int32_t x2 = 0;
@@ -210,7 +210,7 @@ static int32_t calcParamB5(uint16_t rawTemperature) {
 int16_t BMP180_CalcTemperature(uint16_t rawTemperature) {
     
     int16_t temperature = 0;
-    temperature = (int16_t)((calcParamB5(rawTemperature) + 8) >> 4);
+    temperature = (int16_t)((calcB5(rawTemperature) + 8) >> 4);
     
     return temperature;
 }
@@ -256,7 +256,7 @@ int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature) {
     uint32_t b7 = 0;
     
     /* Calculate B6 */
-    b6 = calcParamB5(rawTemperature) - 4000;
+    b6 = calcB5(rawTemperature) - 4000;
     
     /* Calculate B3 */
     x1 = (pBMP180->calibParam.b2 * ((b6 * b6) >> 12)) >> 11;
