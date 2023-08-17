@@ -11,12 +11,12 @@
  * Program version:     1.0
  
  * Program Description:
- * This module represents an Application Programming Interface (API) for the 
- * Bosch BMP180 digital pressure sensor.
+ * This module contains functionality for the the Bosch BMP180 barometric
+ * pressure sensor API
  * 
  * 
  * Hardware Description:
- * 
+ * Bosch BMP180 barometric pressure sensor
 */
 
 #include "mcc_generated_files/mcc.h"
@@ -28,13 +28,14 @@ static BMP180_PARAM *pBMP180;
 /* Internal function prototypes */
 static int32_t calcB5(uint16_t rawTemperature);
 
-/******************************************************************************
- * Function: uint8_t BMP180_Init(BMP180_PARAM *bmp180)
- *
- * Returns: 
- * 
- * Description: 
+/******************************************************************************* 
+ * Function to initialise the communication with the BMP180 sensor
  ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file
+ * 
+ */
 uint8_t BMP180_Init(BMP180_PARAM *bmp180) {
 
     /* Assign BMP180 structure to internal global pointer variable */
@@ -95,13 +96,14 @@ uint8_t BMP180_Init(BMP180_PARAM *bmp180) {
     return 0; // return successfully
 }
 
-/******************************************************************************
- * Function: 
- *
- * Returns: 
- * 
- * Description: 
+/******************************************************************************* 
+ * Function to read uncompensated temperature
  ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file
+ * 
+ */
 uint16_t BMP180_ReadRawTemperature(void) {
     
     uint8_t dataBytes[BMP180_TEMPERATURE_DATA_BYTES] = {0};
@@ -125,13 +127,14 @@ uint16_t BMP180_ReadRawTemperature(void) {
 }
 
 
-/******************************************************************************
- * Function: 
- *
- * Returns: 
- * 
- * Description: 
+/******************************************************************************* 
+ * Function to read uncompensated pressure
  ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file
+ * 
+ */
 uint32_t BMP180_ReadRawPressure(void) {
     
     uint8_t dataBytes[BMP180_PRESSURE_DATA_BYTES] = {0};
@@ -170,17 +173,14 @@ uint32_t BMP180_ReadRawPressure(void) {
     return rawPressure;
 }
 
-/******************************************************************************
- * Function: 
- *
- * Returns: 
- * 
- * Description: According to the manual (BMP180 data sheet rev 1.2), the 
- * temperature is calculated as follows:
- * X1 = (UT - AC6) * AC5 / 2^15
- * X2 = MC * 2^11 / (X1 + MD)
- * B5 = X1 + X2
+/******************************************************************************* 
+ * Function to calculate the internal parameter B5
  ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file and the BMP180 data sheet rev 1.2
+ * 
+ */
 static int32_t calcB5(uint16_t rawTemperature) {
 
     int32_t x1 = 0; 
@@ -198,15 +198,14 @@ static int32_t calcB5(uint16_t rawTemperature) {
 }
 
 
-/******************************************************************************
- * Function: 
- *
- * Returns: 
- * 
- * Description: According to the manual (BMP180 data sheet rev 1.2), the 
- * temperature is calculated as follows:
- * T = (B5 + 8) / 2^4
+/******************************************************************************* 
+ * Function to calculate the true temperature
  ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file and the BMP180 data sheet rev 1.2
+ * 
+ */
 int16_t BMP180_CalcTemperature(uint16_t rawTemperature) {
     
     int16_t temperature = 0;
@@ -216,34 +215,14 @@ int16_t BMP180_CalcTemperature(uint16_t rawTemperature) {
 }
 
 
-/******************************************************************************
- * Function: 
- *
- * Returns: 
- * 
- * Description: 
- * According to the manual (BMP180 data sheet rev 1.2), the pressure is 
- * calculated as follows:
- * B6 = B5 - 4000
- * X1 = (B2 * (B6 * B6 / 2^12)) / 2^11
- * X2 = AC2 * B6 / 2^11
- * X3 = X1 + X2
- * B3 = ((((long) AC1 * 4 + X3) << oss) + 2) / 4
- * X1 = AC3 * B6 / 2^13
- * X2 = (B1 * (B6 * B6 / 2^12)) / 2^16
- * X3 = ((X1 + X2) + 2) / 2^2
- * B4 = AC4 * (unsigned long)(X3 + 32768) / 2^15
- * B7 = ((unsigned long)UP - B3) * (50000 >> oss)
- * if (B7 < 0x80000000 ) then
- *      p = (B7 * 2) / B4
- * else
- *      p = (B7 / B4) *2
- * X1 = (p / 2^8) * (p / 2^8)
- * X1 = (X1 * 3038) / 2^16
- * X2 = (-7367 * p) / 2^16
- * p = p + (X1 + X2 + 3791) / 2^4
- * 
+/******************************************************************************* 
+ * Function to calculate the true pressure
  ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file and the BMP180 data sheet rev 1.2
+ * 
+ */
 int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature) {
     
     int32_t pressure = 0;
@@ -292,11 +271,3 @@ int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature) {
     
     return pressure;
 }
-
-/******************************************************************************
- * Function: 
- *
- * Returns: 
- * 
- * Description: 
- ******************************************************************************/
