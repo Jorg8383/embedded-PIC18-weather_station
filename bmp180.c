@@ -93,6 +93,22 @@ uint8_t BMP180_Init(BMP180_PARAM *bmp180) {
     pBMP180->calibParam.md = (int16_t) i2c_read2ByteRegister(BMP180_I2C_ADDR, 
             BMP180_CAL_COEFF_MD_MSB);
 
+    /* Debugging only! Use default parameters as provided in the data sheet */
+    #if BMP180_DEBUG_USE_DEFAULT_PARAM == 1
+        pBMP180->calibParam.ac1 = 408;
+        pBMP180->calibParam.ac2 = -72;
+        pBMP180->calibParam.ac3 = -14383;
+        pBMP180->calibParam.ac4 = 32741;
+        pBMP180->calibParam.ac5 = 32757;
+        pBMP180->calibParam.ac6 = 23153;
+        pBMP180->calibParam.b1 = 6190;
+        pBMP180->calibParam.b2 = 4;
+        pBMP180->calibParam.mb = -32768;
+        pBMP180->calibParam.mc = -8711;
+        pBMP180->calibParam.md = 2868;
+        pBMP180->oversampling = BMP180_MODE_ULTRALOWPOWER; // oss = 0
+    #endif
+    
     return 0; // return successfully
 }
 
@@ -123,6 +139,11 @@ uint16_t BMP180_ReadRawTemperature(void) {
     rawTemperature = (uint16_t)(dataBytes[BMP180_TEMPERATURE_DATA_MSB] << 8 
             | dataBytes[BMP180_TEMPERATURE_DATA_LSB]);
     
+    /* Debugging only! Use default parameters as provided in the data sheet */
+    #if BMP180_DEBUG_USE_DEFAULT_PARAM == 1
+        rawTemperature = 27898;
+    #endif
+
     return rawTemperature;
 }
 
@@ -169,6 +190,11 @@ uint32_t BMP180_ReadRawPressure(void) {
             | ((uint32_t)dataBytes[BMP180_PRESSURE_DATA_LSB] << 8)
             | (uint32_t)dataBytes[BMP180_PRESSURE_DATA_XLSB])
             >> (8 - pBMP180->oversampling));
+
+    /* Debugging only! Use default parameters as provided in the data sheet */
+    #if BMP180_DEBUG_USE_DEFAULT_PARAM == 1
+        rawPressure = 23843;
+    #endif
 
     return rawPressure;
 }

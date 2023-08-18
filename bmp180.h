@@ -36,6 +36,11 @@ typedef enum {
     BMP180_MODE_ULTRAHIGHRESOLUTION    
 } BMP180_OVERSAMPLING;
 
+/* Debugging: set to simulates the pressure and temperature calculation by
+ * using data provided in the example calculation as demonstrated in the BMP180
+ * data sheet */
+#define BMP180_DEBUG_USE_DEFAULT_PARAM      0 
+
 /* Data registers to operate the BMP180 */
 #define BMP180_REG_CHIP_ID                  0xD0
 #define BMP180_REG_CHIP_ID_VALUE            0x55 // fixed chip-id value 
