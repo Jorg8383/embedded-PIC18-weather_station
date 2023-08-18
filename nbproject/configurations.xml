@@ -64,6 +64,7 @@
       <itemPath>lcd.c</itemPath>
       <itemPath>lcd_test.c</itemPath>
       <itemPath>bmp180.c</itemPath>
+      <itemPath>bmp180_test.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

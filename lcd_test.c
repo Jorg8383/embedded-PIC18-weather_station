@@ -1,6 +1,6 @@
 /**
  * 
- * File:                lcd.c
+ * File:                lcd_test.c
  * Author:              J. Striebel
  * Project:             Weather Station
  * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V
