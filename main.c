@@ -24,8 +24,12 @@
 #include "mcc_generated_files/adcc.h"
 #include "lcd.h"
 #include "lcd_test.h"
+#include "bmp180.h"
+
 
 void mainInit(void);
+extern void BMP180_TestRoutine(void);
+
 
 /******************************************************************************
  * Main application
@@ -36,13 +40,14 @@ void main(void)
     
     while (1)
     {
-        LCD_TestRoutine();
+//        LCD_TestRoutine();
+        BMP180_TestRoutine();
         
     }
 }
 
 /******************************************************************************
- * Main init application
+ * Main initialisation routine
  ******************************************************************************/
 void mainInit(void){
 
@@ -68,7 +73,7 @@ void mainInit(void){
     // Select ADC channel, enable ADC and start conversion
     ADCC_StartConversion(RA0_POT);
     TMR2_Start();
-
+    
     LCD_Init();
     __delay_ms(500);
        

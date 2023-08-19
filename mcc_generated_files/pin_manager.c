@@ -77,7 +77,7 @@ void PIN_MANAGER_Initialize(void)
     */
     ANSELD = 0x00;
     ANSELC = 0x3F;
-    ANSELB = 0xFF;
+    ANSELB = 0xF9;
     ANSELE = 0x07;
     ANSELA = 0xFF;
 
@@ -86,9 +86,9 @@ void PIN_MANAGER_Initialize(void)
     */
     WPUD = 0x00;
     WPUE = 0x00;
-    WPUB = 0x00;
+    WPUB = 0x06;
     WPUA = 0x00;
-    WPUC = 0x00;
+    WPUC = 0x18;
 
     /**
     ODx registers
@@ -96,7 +96,7 @@ void PIN_MANAGER_Initialize(void)
     ODCONE = 0x00;
     ODCONA = 0x00;
     ODCONB = 0x00;
-    ODCONC = 0x00;
+    ODCONC = 0x18;
     ODCOND = 0x00;
 
     /**
@@ -124,9 +124,13 @@ void PIN_MANAGER_Initialize(void)
    
     
 	
+    SSP2DATPPS = 0x0A;   //RB2->MSSP2:SDA2;    
     RX1PPS = 0x17;   //RC7->EUSART1:RX1;    
+    RB1PPS = 0x11;   //RB1->MSSP2:SCL2;    
+    RB2PPS = 0x12;   //RB2->MSSP2:SDA2;    
     RD0PPS = 0x07;   //RD0->PWM3:PWM3;    
     RC6PPS = 0x09;   //RC6->EUSART1:TX1;    
+    SSP2CLKPPS = 0x09;   //RB1->MSSP2:SCL2;    
 }
   
 void PIN_MANAGER_IOC(void)
