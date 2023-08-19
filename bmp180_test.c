@@ -45,13 +45,13 @@ void BMP180_TestRoutine(void){
         printf("BMP180 - raw temperature: %d\n", rawTemperature);
 
         rawPressure = BMP180_ReadRawPressure();
-        printf("BMP180 - raw pressure: %d\n", rawPressure);
+        printf("BMP180 - raw pressure: %ld\n", rawPressure);
         
         temperature = BMP180_CalcTemperature(rawTemperature);
         printf("BMP180 - temperature: %d\n", temperature);        
         
         pressure = BMP180_CalcPressure(rawPressure, rawTemperature);
-        printf("BMP180 - pressure: %d\n", pressure);
+        printf("BMP180 - pressure: %ld\n", pressure);
         
         printf("----------------------------------\n");
     }
