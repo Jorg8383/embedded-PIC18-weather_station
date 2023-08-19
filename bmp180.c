@@ -61,9 +61,11 @@ uint8_t BMP180_Init(BMP180_PARAM *bmp180) {
     }
 
     /* Read sensor chip-id to check whether communication is established */
-    if (i2c_read1ByteRegister(BMP180_I2C_ADDR, BMP180_REG_CHIP_ID) 
-            != BMP180_REG_CHIP_ID_VALUE)
+    pBMP180->chipId = (i2c_read1ByteRegister(BMP180_I2C_ADDR,
+            BMP180_REG_CHIP_ID)); 
+    if (pBMP180->chipId != BMP180_REG_CHIP_ID_VALUE)
         return 2; // Error 2; communication failed
+    
     
     /* Read calibration data AC1 to AC6 from the EEPROM of the BMP180 */
     pBMP180->calibParam.ac1 = (int16_t) i2c_read2ByteRegister(BMP180_I2C_ADDR, 
@@ -123,6 +125,7 @@ uint8_t BMP180_Init(BMP180_PARAM *bmp180) {
 uint16_t BMP180_ReadRawTemperature(void) {
     
     uint8_t dataBytes[BMP180_TEMPERATURE_DATA_BYTES] = {0};
+    uint8_t regOutputStartAddr = BMP180_REG_OUT_MSB;
     uint16_t rawTemperature = 0; // uncompensated temperature UT
     
     /* Write value to oversampling control register */
@@ -133,6 +136,8 @@ uint16_t BMP180_ReadRawTemperature(void) {
     __delay_ms(BMP180_CONV_TIME_TEMP);
 
     /* Read raw temperature data (16-bit) */
+    i2c_writeNBytes(BMP180_I2C_ADDR, &regOutputStartAddr, 
+            sizeof(regOutputStartAddr));
     i2c_readNBytes(BMP180_I2C_ADDR, dataBytes, sizeof(dataBytes));
 
     /* Typecast data array to temperature variable */
@@ -159,6 +164,7 @@ uint16_t BMP180_ReadRawTemperature(void) {
 uint32_t BMP180_ReadRawPressure(void) {
     
     uint8_t dataBytes[BMP180_PRESSURE_DATA_BYTES] = {0};
+    uint8_t regOutputStartAddr = BMP180_REG_OUT_MSB;
     uint32_t rawPressure = 0; // uncompensated pressure data UP
     
     /* Write value to oversampling control register */
@@ -182,6 +188,8 @@ uint32_t BMP180_ReadRawPressure(void) {
     }
 
     /* Read raw pressure data UP (16 to 19-bit) */
+    i2c_writeNBytes(BMP180_I2C_ADDR, &regOutputStartAddr, 
+            sizeof(regOutputStartAddr));
     i2c_readNBytes(BMP180_I2C_ADDR, dataBytes, sizeof(dataBytes));
 
     /* Typecast data array to pressure variable */
