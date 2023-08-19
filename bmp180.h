@@ -12,9 +12,9 @@
  * --------------------
  * This header file represents an Application Programming Interface (API) for
  * the Bosch BMP180 barometric pressure sensor, allowing to communicate with
- * a MCU via I2C. To ensure application code portability across various 
- * Microchip MCU's, this sensor API utilises the Foundation Service framework
- * which provides fully hardware-abstracted interfaces. 
+ * a PIC microcontroller via I2C. To ensure application code portability across 
+ * various Microchip MCU's, this sensor API utilises the Foundation Service 
+ * framework which provides fully hardware-abstracted interfaces. 
  * 
  * Hardware Description:
  * --------------------

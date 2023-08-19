@@ -11,13 +11,16 @@
  * Program version:     1.0
  
  * Program Description:
+ * --------------------
  * This module contains functionality for the the Bosch BMP180 barometric
  * pressure sensor API
  * 
  * 
  * Hardware Description:
+ * --------------------
  * Bosch BMP180 barometric pressure sensor
-*/
+ * 
+ */
 
 #include "mcc_generated_files/mcc.h"
 #include "bmp180.h"
