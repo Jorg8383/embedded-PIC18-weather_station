@@ -81,22 +81,25 @@ void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
 
 static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     
-    const uint8_t charPosOffset = 16;
+    const uint8_t charPos = 16;
     uint8_t i;
     
     // Print a welcome message on the LCD very right position
-    LCD_SetCursor(LCD_FIRST_LINE, charPosOffset);
+    LCD_Clear();
+    LCD_SetCursor(LCD_FIRST_LINE, charPos);
     LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
     __delay_ms(100);
+    
     // Scroll the welcome text from right to left 
-    for (i = 0; i <= charPosOffset + strlen(getLcdText(LCD_TXT_WELCOME)); i++) {
+    for (i = 0; i <= charPos + strlen(getLcdText(LCD_TXT_WELCOME)); i++) {
         LCD_ShiftDisplayLeft();
         __delay_ms(100);    
     }
     
-    (*pCurrentState)++; // Go to the next state
-    
+    // Transition to the following state
+    (*pCurrentState)++;     
 }
+
 
 static void stateUpdateMeasurement(DeviceState *pCurrentState, 
         DeviceContext *pContext){
@@ -110,16 +113,25 @@ static void stateUpdateMeasurement(DeviceState *pCurrentState,
             rawTemperature);
     pContext->altitude = BMP180_CalcAltitude(pContext->pressure);
             
-    (*pCurrentState)++; // Go to the next state
+    // Transition to the following state
+    (*pCurrentState)++; 
 }
 
 
 
 static void stateDisplayTemperature(DeviceState *pCurrentState, 
         DeviceContext *pContext) 
-{
-    // TODO display value
+{   
     
+    uint8_t charPos;
+    
+    LCD_Clear();
+    charPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_TEMPERATURE)));
+    LCD_SetCursor(LCD_FIRST_LINE, charPos);
+    LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
+    
+    // Transition to the following state
+    (*pCurrentState)++; 
 }
 
 static void stateDisplayPressure(DeviceState *pCurrentState,
@@ -131,8 +143,9 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
     // Convert Pa to hPa
     hpa = pContext->pressure / 100; // convert Pa to hPa
     
-    // TODO display value
     
+    // Transition to the following state
+    (*pCurrentState)++; 
 }
 
 static void stateDisplayAltitude(DeviceState *pCurrentState,
@@ -141,6 +154,8 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
     // TODO display value
     
             
+    // Transition to the following state
+    (*pCurrentState)++; 
 }
 
 static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
@@ -149,12 +164,12 @@ static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     if (TMR0_HasOverflowOccured()){
         TMR0_StopTimer();
-        (*pCurrentState)++; // Go to the next state
+        // Transition to the following state
+        (*pCurrentState)++; 
     }    
 }
 
 static void stateFinal(DeviceState *pCurrentState, DeviceContext *pContext) {
     
-    (*pCurrentState) = STATE_UPDATE_MEASUREMENT;
-    
+    (*pCurrentState) = STATE_UPDATE_MEASUREMENT;    
 }

@@ -15,6 +15,8 @@
 #include "mcc_generated_files/mcc.h"
 #include "lcd.h"
 
+#define LCD_CHAR_LENGTH 16 // LCD 16x2 lines display
+
 // Indices for LCD text messages
 typedef enum {
     LCD_TXT_WELCOME,
