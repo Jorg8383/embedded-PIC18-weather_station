@@ -23,11 +23,16 @@
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/adcc.h"
 #include "lcd.h"
+#include "lcd_app.h"
 #include "bmp180.h"
+#include "state.h"
 
+DeviceContext deviceContext;
+BMP180_PARAM bmp180;
+extern volatile uint32_t stateWaitCount;
 
 void mainInit(void);
-
+void sysTickRoutine(void);
 
 /******************************************************************************
  * Main application
@@ -47,6 +52,8 @@ void main(void)
  ******************************************************************************/
 void mainInit(void){
 
+    _Bool sensorInitFailed = false;
+        
     // Initialize the device
     SYSTEM_Initialize();
 
@@ -69,9 +76,18 @@ void mainInit(void){
     // Select ADC channel, enable ADC and start conversion
     ADCC_StartConversion(RA0_POT);
     TMR2_Start();
-    
+       
     LCD_Init();
     __delay_ms(500);
+    
+    // Initialise the BMP180 barometric pressure sensor
+    if (BMP180_Init(&bmp180) != 0) {
+        sensorInitFailed = true;
+        LCD_Clear();
+// TODO
+//        LCD_PrintString(pText[LCD_TXT_ERROR_SENSOR]);
+    }
+    while (sensorInitFailed);
        
 }
 

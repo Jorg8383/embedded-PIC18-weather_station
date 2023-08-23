@@ -24,17 +24,21 @@
 // Define the device states
 typedef enum {
     STATE_INIT,
-    STATE_UPDATE_TEMPERATURE,
+    STATE_UPDATE_MEASUREMENT,
+    STATE_DISPLAY_TEMPERATURE,
     STATE_WAIT_1,        
-    STATE_UPDATE_PRESSURE,
+    STATE_DISPLAY_PRESSURE,
     STATE_WAIT_2,        
-    STATE_UPDATE_ALTITUDE,
-    STATE_WAIT_3
+    STATE_DISPLAY_ALTITUDE,
+    STATE_WAIT_3,
+    STATE_FINAL        
 } DeviceState;
 
 // Structure to hold state context information
 typedef struct {
-    uint8_t dummyInfo; // Not used yet
+    int16_t temperature;
+    int32_t pressure;
+    int16_t altitude;
 } DeviceContext;
 
 // Function pointer type for state handler functions

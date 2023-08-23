@@ -24,10 +24,12 @@
         <itemPath>mcc_generated_files/tmr2.h</itemPath>
         <itemPath>mcc_generated_files/pwm3.h</itemPath>
         <itemPath>mcc_generated_files/i2c2_master.h</itemPath>
+        <itemPath>mcc_generated_files/tmr0.h</itemPath>
       </logicalFolder>
       <itemPath>lcd.h</itemPath>
       <itemPath>bmp180.h</itemPath>
       <itemPath>state.h</itemPath>
+      <itemPath>lcd_app.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -59,6 +61,7 @@
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
         <itemPath>mcc_generated_files/pwm3.c</itemPath>
         <itemPath>mcc_generated_files/i2c2_master.c</itemPath>
+        <itemPath>mcc_generated_files/tmr0.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>lcd.c</itemPath>
@@ -66,6 +69,7 @@
       <itemPath>bmp180.c</itemPath>
       <itemPath>bmp180_test.c</itemPath>
       <itemPath>state.c</itemPath>
+      <itemPath>lcd_app.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

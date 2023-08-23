@@ -15,24 +15,36 @@
 #include "state.h"
 #include "bmp180.h"
 #include "lcd.h"
+#include "lcd_app.h"
 
+
+volatile uint32_t stateWaitCount;
 
 // Function prototypes for state handler functions
-static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext);
-static void stateUpdateTemperature(DeviceState *pCurrentState, DeviceContext *pContext);
-static void stateUpdatePressure(DeviceState *pCurrentState, DeviceContext *pContext);
-static void stateUpdateAltitude(DeviceState *pCurrentState, DeviceContext *pContext);
-static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext);
-static void stateFinal(DeviceState *pCurrentState, DeviceContext *pContext);
+static void stateInit(DeviceState *pCurrentState, 
+        DeviceContext *pContext);
+static void stateUpdateMeasurement(DeviceState *pCurrentState, 
+        DeviceContext *pContext);
+static void stateDisplayTemperature(DeviceState *pCurrentState, 
+        DeviceContext *pContext);
+static void stateDisplayPressure(DeviceState *pCurrentState, 
+        DeviceContext *pContext);
+static void stateDisplayAltitude(DeviceState *pCurrentState,
+        DeviceContext *pContext);
+static void stateWait(DeviceState *pCurrentState,
+        DeviceContext *pContext);
+static void stateFinal(DeviceState *pCurrentState,
+        DeviceContext *pContext);
 
 // Declare an array of function pointers for state handlers in flash memory
 static void (*const pStateHandlers[])(DeviceState*, DeviceContext*) = {
     &stateInit,
-    &stateUpdateTemperature,
+    &stateUpdateMeasurement,
+    &stateDisplayTemperature,
     &stateWait,
-    &stateUpdatePressure,
+    &stateDisplayPressure,
     &stateWait,
-    &stateUpdateAltitude,
+    &stateDisplayAltitude,
     &stateWait,
     &stateFinal
 };
@@ -46,7 +58,9 @@ void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
         return;
     
     // Initialise context if needed
-    pContext->dummyInfo = 0;
+    pContext->altitude = 0;
+    pContext->pressure = 0;
+    pContext->temperature = 0;
     
     // Set the initial state
     *pCurrentState = STATE_INIT;
@@ -67,9 +81,80 @@ void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
 
 static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     
+    const uint8_t charPosOffset = 16;
+    uint8_t i;
     
+    // Print a welcome message on the LCD very right position
+    LCD_SetCursor(LCD_FIRST_LINE, charPosOffset);
+    LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
+    __delay_ms(100);
+    // Scroll the welcome text from right to left 
+    for (i = 0; i <= charPosOffset + strlen(getLcdText(LCD_TXT_WELCOME)); i++) {
+        LCD_ShiftDisplayLeft();
+        __delay_ms(100);    
+    }
     
     (*pCurrentState)++; // Go to the next state
     
 }
 
+static void stateUpdateMeasurement(DeviceState *pCurrentState, 
+        DeviceContext *pContext){
+    
+    uint32_t rawTemperature;
+    
+    // Get raw sensor data and calculate temperature, pressure and altitude
+    rawTemperature = BMP180_ReadRawTemperature();
+    pContext->temperature = BMP180_CalcTemperature(rawTemperature);
+    pContext->pressure = BMP180_CalcPressure(BMP180_ReadRawPressure(), 
+            rawTemperature);
+    pContext->altitude = BMP180_CalcAltitude(pContext->pressure);
+            
+    (*pCurrentState)++; // Go to the next state
+}
+
+
+
+static void stateDisplayTemperature(DeviceState *pCurrentState, 
+        DeviceContext *pContext) 
+{
+    // TODO display value
+    
+}
+
+static void stateDisplayPressure(DeviceState *pCurrentState,
+        DeviceContext *pContext)
+{
+    
+    int16_t hpa; // Pressure in hPa (100 Pa = 1 hPa = 1 mbar)
+    
+    // Convert Pa to hPa
+    hpa = pContext->pressure / 100; // convert Pa to hPa
+    
+    // TODO display value
+    
+}
+
+static void stateDisplayAltitude(DeviceState *pCurrentState,
+        DeviceContext *pContext) 
+{
+    // TODO display value
+    
+            
+}
+
+static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
+    
+    TMR0_StartTimer();
+    
+    if (TMR0_HasOverflowOccured()){
+        TMR0_StopTimer();
+        (*pCurrentState)++; // Go to the next state
+    }    
+}
+
+static void stateFinal(DeviceState *pCurrentState, DeviceContext *pContext) {
+    
+    (*pCurrentState) = STATE_UPDATE_MEASUREMENT;
+    
+}
