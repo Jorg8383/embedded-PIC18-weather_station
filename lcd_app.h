@@ -16,6 +16,7 @@
 #include "lcd.h"
 
 #define LCD_CHAR_LENGTH 16 // LCD 16x2 lines display
+#define LCD_TEMPERATURE_BUFFER_SIZE    20
 
 // Indices for LCD text messages
 typedef enum {
@@ -30,7 +31,7 @@ typedef enum {
 } LcdTextIndex;
 
 // Function prototypes
-void displayTemperature(int16_t temperature);
+void convertTemperatureToString(int16_t temperature, char *buffer);
 const char *getLcdText(LcdTextIndex txtIndex);
 
 

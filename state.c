@@ -124,11 +124,15 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
 {   
     
     uint8_t charPos;
+    char strTemperature[LCD_TEMPERATURE_BUFFER_SIZE - 1];
     
     LCD_Clear();
     charPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_TEMPERATURE)));
     LCD_SetCursor(LCD_FIRST_LINE, charPos);
     LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
+    LCD_SetCursor(LCD_SECOND_LINE, 5);
+    convertTemperatureToString(pContext->temperature, strTemperature);
+    LCD_PrintString(strTemperature);
     
     // Transition to the following state
     (*pCurrentState)++; 

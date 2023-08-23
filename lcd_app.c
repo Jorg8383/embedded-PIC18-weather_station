@@ -16,8 +16,6 @@
 
 #include "lcd_app.h"
 
-#define DISPLAY_TEMP_BUFFER_ELEMENTS    20
-
 // Define text messages to be displayed on the LCD
 const char *pText[LCD_NUM_MESSAGES] = {
     "Welcome to the weather station project!",
@@ -41,15 +39,18 @@ const char *getLcdText(LcdTextIndex txtIndex) {
     }
 }
 
-// Function that displays the temperature as float
-void displayTemperature(int16_t temperature) {
-    
-    char stringBuffer[DISPLAY_TEMP_BUFFER_ELEMENTS - 1] = "";
+// Function that converts the temperature to a string with one decimal place
+void convertTemperatureToString(int16_t temperature, char *buffer) {
+        
     uint8_t i = 0;
     uint8_t strStart = 0; 
     uint8_t strEnd;
     _Bool isNegative = false;
     _Bool addZeroDigit = false;
+
+    // Check for null pointer
+    if (buffer == 0)
+    return;
     
     // Handle negative numbers
     if (temperature < 0) {
@@ -65,11 +66,11 @@ void displayTemperature(int16_t temperature) {
      * presentation where for example a temperature value of 150 is displayed as
      * 15.0 degree Celsius */
     do {
-        stringBuffer[i++] = temperature % 10 + '0';
+        buffer[i++] = temperature % 10 + '0';
         if (i == 1) {
-            stringBuffer[i++] = '.';
+            buffer[i++] = '.';
             if (addZeroDigit) {
-                stringBuffer[i++] = '0';
+                buffer[i++] = '0';
             }
         }
         temperature /= 10;
@@ -77,22 +78,22 @@ void displayTemperature(int16_t temperature) {
     
     // Add a '-' sign if the number was negative
     if (isNegative) {
-        stringBuffer[i++] = '-';
+        buffer[i++] = '-';
     }
     
     // Null-terminate the string
-    stringBuffer[i] = '\0';
+    buffer[i] = '\0';
     
     // Reverse the string to get the correct order
-    strEnd = strlen(stringBuffer) - 1;
+    strEnd = (uint8_t) strlen(buffer) - 1;
     while (strStart < strEnd) {
-        char temp = stringBuffer[strStart];
-        stringBuffer[strStart] = stringBuffer[strEnd];
-        stringBuffer[strEnd] = temp;
+        char temp = buffer[strStart];
+        buffer[strStart] = buffer[strEnd];
+        buffer[strEnd] = temp;
         strStart++;
         strEnd--;
     }
     
-    LCD_PrintString(stringBuffer);
+    return;
     
 }
