@@ -23,12 +23,10 @@
 #include "mcc_generated_files/mcc.h"
 #include "mcc_generated_files/adcc.h"
 #include "lcd.h"
-#include "lcd_test.h"
 #include "bmp180.h"
 
 
 void mainInit(void);
-extern void BMP180_TestRoutine(void);
 
 
 /******************************************************************************
@@ -40,8 +38,6 @@ void main(void)
     
     while (1)
     {
-//        LCD_TestRoutine();
-        BMP180_TestRoutine();
         
     }
 }

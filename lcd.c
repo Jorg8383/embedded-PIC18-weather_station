@@ -25,6 +25,7 @@
  * 
 */
 
+#include "mcc_generated_files/mcc.h"
 #include "lcd.h"
 
 // Internal function prototypes

@@ -19,12 +19,17 @@
 #ifndef STATE_H
 #define	STATE_H
 
+#include "mcc_generated_files/mcc.h"
+
 // Define the device states
 typedef enum {
+    STATE_INIT,
     STATE_UPDATE_TEMPERATURE,
+    STATE_WAIT_1,        
     STATE_UPDATE_PRESSURE,
+    STATE_WAIT_2,        
     STATE_UPDATE_ALTITUDE,
-    STATE_WAIT
+    STATE_WAIT_3
 } DeviceState;
 
 // Structure to hold state context information
@@ -36,8 +41,8 @@ typedef struct {
 typedef void (*stateHandler)(DeviceState*, DeviceContext*);
 
 // Function prototypes for state machine functions
-void stateMachineInit(DeviceState *currentState, DeviceContext *context);
-void stateMachineRun(DeviceState *currentState, DeviceContext *context);
+void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext);
+void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext);
 
 
 #ifdef	__cplusplus

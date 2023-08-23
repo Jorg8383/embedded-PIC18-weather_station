@@ -20,7 +20,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "lcd_test.h"
 #include "lcd.h"
 
 char *pDisplayText[] = {
