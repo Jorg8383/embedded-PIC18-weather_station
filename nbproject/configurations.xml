@@ -26,8 +26,8 @@
         <itemPath>mcc_generated_files/i2c2_master.h</itemPath>
       </logicalFolder>
       <itemPath>lcd.h</itemPath>
-      <itemPath>lcd_test.h</itemPath>
       <itemPath>bmp180.h</itemPath>
+      <itemPath>state.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
