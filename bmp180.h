@@ -25,6 +25,9 @@
 #ifndef BMP180_H
 #define	BMP180_H
 
+#include "mcc_generated_files/mcc.h"
+#include <math.h>
+
  /* I2C address definition */
 #define BMP180_I2C_ADDR                     0x77
 
@@ -102,6 +105,8 @@ typedef enum {
 #define BMP180_PRESSURE_DATA_XLSB           2 
 #define BMP180_INVALID_DATA                 0
 
+#define BMP180_ALTITUDE_SCALE_FACTOR        443
+
 /* Data structure that holds device specific calibration parameters */
 typedef struct bmp180_cal_coeff_t
 {
@@ -129,6 +134,7 @@ typedef struct bmp180_param_t
     uint8_t                 deviceAddr;
 } BMP180_PARAM; 
 
+typedef int32_t fixed_point_t;
 
 /******************************************************************************* 
  * Function to initialise the communication with the BMP180 sensor
@@ -226,6 +232,25 @@ int16_t BMP180_CalcTemperature(uint16_t rawTemperature);
  * 
 */
 int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature);
+
+
+/******************************************************************************* 
+ * Function to calculate the absolute altitude
+ ******************************************************************************/
+/*
+ * @brief This function calculates the absolute altitude in meters using this 
+ * international barometric formula: 
+ * 
+ * altitude = 44330 * (1 - (p/p0)^(1/5.255))
+ * 
+ * where p0 = 101325 Pa which is equivalent to 1013.25 hPa and 1013.25 millibar
+ *
+ * @param The true pressure; result from invoking BMP180_CalcPressure(...)
+ * 
+ * @return The absolute altitude in meters as 16-bit signed integer
+ * 
+*/
+int16_t BMP180_CalcAltitude(int32_t pressure);
 
 
 #ifdef	__cplusplus

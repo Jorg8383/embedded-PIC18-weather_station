@@ -22,7 +22,6 @@
  * 
  */
 
-#include "mcc_generated_files/mcc.h"
 #include "bmp180.h"
 
 /* Internal global variables */
@@ -307,4 +306,24 @@ int32_t BMP180_CalcPressure(uint32_t rawPressure, uint32_t rawTemperature) {
     pressure += (x1 + x2 + 3791) >> 4;
     
     return pressure;
+}
+
+
+/******************************************************************************* 
+ * Function to calculate the absolute altitude
+ ******************************************************************************/
+/*
+ * @brief For more details refer to the documentation in the corresponding
+ * header file and the BMP180 data sheet rev 1.2
+ * 
+ */
+int16_t BMP180_CalcAltitude(int32_t pressure) {
+    
+    // The mean sea-level atmospheric pressure on Earth is 101,325 Pa
+    const float seaLevelPressure = 101325; 
+    float altitude;
+    
+    altitude = 44330 * (1.0 - pow(pressure / seaLevelPressure, 0.1903));
+    
+    return (int16_t) altitude;
 }

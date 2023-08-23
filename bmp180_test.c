@@ -24,12 +24,15 @@ BMP180_PARAM bmp180;
 _Bool initialiseSensor = true;
 uint8_t initResult = 0xFF;
 
+extern int32_t calculateAltitude(uint32_t pressure);
+
 void BMP180_TestRoutine(void){
 
     uint16_t rawTemperature;
     uint32_t rawPressure;
     int16_t temperature;
     int32_t pressure;
+    int16_t altitude;
     
     if (initialiseSensor) {
         initialiseSensor = false;
@@ -52,6 +55,14 @@ void BMP180_TestRoutine(void){
         
         pressure = BMP180_CalcPressure(rawPressure, rawTemperature);
         printf("BMP180 - pressure: %ld\n", pressure);
+        
+        altitude = BMP180_CalcAltitude(pressure);
+        printf("BMP180 - altitude: %d\n", altitude);
+
+//        altitude = BMP180_CalculateAltitude(pressure);
+//        printf("BMP180 - altitude: %d\n", altitude);
+
+        
         
         printf("----------------------------------\n");
     }
