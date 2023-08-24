@@ -50,7 +50,7 @@ static void (*const pStateHandlers[])(DeviceState*, DeviceContext*) = {
 };
 
 
-// Function that initialises the state machine
+// Function to initialise the state machine
 void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     // Check for null pointers
@@ -83,6 +83,10 @@ static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     const uint8_t charPos = 16;
     uint8_t i;
+    
+    // Initialise Timer0
+    TMR0_StopTimer();
+    TMR0_WriteTimer(0);
     
     // Print a welcome message on the LCD very right position
     LCD_Clear();
@@ -118,7 +122,6 @@ static void stateUpdateMeasurement(DeviceState *pCurrentState,
 }
 
 
-
 static void stateDisplayTemperature(DeviceState *pCurrentState, 
         DeviceContext *pContext) 
 {   
@@ -143,6 +146,7 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
     // Transition to the following state
     (*pCurrentState)++; 
 }
+
 
 static void stateDisplayPressure(DeviceState *pCurrentState,
         DeviceContext *pContext)
@@ -170,15 +174,28 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
     (*pCurrentState)++; 
 }
 
+
 static void stateDisplayAltitude(DeviceState *pCurrentState,
         DeviceContext *pContext) 
 {
-    // TODO display value
+    uint8_t charPos;
+
+    // Print the headline "Altitude" in the centre of the first line
+    LCD_Clear();
+    charPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_ALTITUDE)));
+    LCD_SetCursor(LCD_FIRST_LINE, charPos);
+    LCD_PrintString(getLcdText(LCD_TXT_ALTITUDE));
+
+    // Print the altitude value and its unit in the second line
+    LCD_SetCursor(LCD_SECOND_LINE, 4);
+    LCD_PrintInteger(pContext->altitude);
+    LCD_ShiftCursorRight();
+    LCD_PrintString(getLcdText(LCD_TXT_ALTITUDE_UNIT));
     
-            
     // Transition to the following state
     (*pCurrentState)++; 
 }
+
 
 static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
     
@@ -190,6 +207,7 @@ static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
         (*pCurrentState)++; 
     }    
 }
+
 
 static void stateFinal(DeviceState *pCurrentState, DeviceContext *pContext) {
     
