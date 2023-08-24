@@ -89,54 +89,6 @@ void main(void)
         runStateMachine(&currentState, &deviceContext);
     }
 }
-
-///******************************************************************************
-// * Main initialisation routine
-// ******************************************************************************/
-//void mainInit(void){
-//
-//    _Bool sensorInitFailed = false;
-//        
-//    // Initialize the device
-//    SYSTEM_Initialize();
-//
-//    // If using interrupts in PIC18 High/Low Priority Mode you need to enable the Global High and Low Interrupts
-//    // If using interrupts in PIC Mid-Range Compatibility Mode you need to enable the Global and Peripheral Interrupts
-//    // Use the following macros to:
-//
-//    // Enable the Global Interrupts
-//    INTERRUPT_GlobalInterruptEnable();
-//
-//    // Disable the Global Interrupts
-//    //INTERRUPT_GlobalInterruptDisable();
-//
-//    // Enable the Peripheral Interrupts
-//    INTERRUPT_PeripheralInterruptEnable();
-//
-//    // Disable the Peripheral Interrupts
-//    //INTERRUPT_PeripheralInterruptDisable();
-//
-//    // Select ADC channel, enable ADC and start conversion
-//    ADCC_StartConversion(RA0_POT);
-//    TMR2_Start();
-//    
-//    // Initialise state machine
-//    initStateMachine()
-//    
-//    // Initialise LCD display
-//    LCD_Init();
-//    __delay_ms(500);
-//    
-//    // Initialise the BMP180 barometric pressure sensor
-//    if (BMP180_Init(&bmp180) != 0) {
-//        sensorInitFailed = true;
-//        LCD_Clear();
-//        LCD_PrintString(getLcdText(LCD_TXT_ERROR_SENSOR));
-//    }
-//    while (sensorInitFailed);
-//       
-//}
-
 /**
  End of File
 */
