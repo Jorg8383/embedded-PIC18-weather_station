@@ -50,7 +50,7 @@ void convertTemperatureToString(int16_t temperature, char *buffer) {
 
     // Check for null pointer
     if (buffer == 0)
-    return;
+        return;
     
     // Handle negative numbers
     if (temperature < 0) {

@@ -126,13 +126,19 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
     uint8_t charPos;
     char strTemperature[LCD_TEMPERATURE_BUFFER_SIZE - 1];
     
+    // Print the headline "Temperature" in the first line
     LCD_Clear();
     charPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_TEMPERATURE)));
     LCD_SetCursor(LCD_FIRST_LINE, charPos);
     LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
-    LCD_SetCursor(LCD_SECOND_LINE, 5);
+
+    // Print the temperature value and its unit in the second line
     convertTemperatureToString(pContext->temperature, strTemperature);
+    LCD_SetCursor(LCD_SECOND_LINE, 5);
     LCD_PrintString(strTemperature);
+    LCD_ShiftCursorRight();
+    LCD_PrintCharacter(0xdf) // 0xdf = Celsius degree symbol
+    LCD_PrintCharacter('C');        
     
     // Transition to the following state
     (*pCurrentState)++; 
