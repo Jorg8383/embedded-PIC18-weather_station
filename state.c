@@ -126,7 +126,7 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
     uint8_t charPos;
     char strTemperature[LCD_TEMPERATURE_BUFFER_SIZE - 1];
     
-    // Print the headline "Temperature" in the first line
+    // Print the headline "Temperature" in the centre of the first line
     LCD_Clear();
     charPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_TEMPERATURE)));
     LCD_SetCursor(LCD_FIRST_LINE, charPos);
@@ -148,11 +148,23 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
         DeviceContext *pContext)
 {
     
+    uint8_t charPos;
     int16_t hpa; // Pressure in hPa (100 Pa = 1 hPa = 1 mbar)
     
     // Convert Pa to hPa
     hpa = pContext->pressure / 100; // convert Pa to hPa
     
+    // Print the headline "Pressure" in the centre of the first line
+    LCD_Clear();
+    charPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_PRESSURE)));
+    LCD_SetCursor(LCD_FIRST_LINE, charPos);
+    LCD_PrintString(getLcdText(LCD_TXT_PRESSURE));
+
+    // Print the pressure value and its unit in the second line
+    LCD_SetCursor(LCD_SECOND_LINE, 4);
+    LCD_PrintInteger(hpa);
+    LCD_ShiftCursorRight();
+    LCD_PrintString(getLcdText(LCD_TXT_PRESSURE_UNIT));
     
     // Transition to the following state
     (*pCurrentState)++; 
