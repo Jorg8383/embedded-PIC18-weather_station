@@ -18,8 +18,6 @@
 #include "lcd_app.h"
 
 
-volatile uint32_t stateWaitCount;
-
 // Function prototypes for state handler functions
 static void stateInit(DeviceState *pCurrentState, 
         DeviceContext *pContext);
@@ -75,7 +73,7 @@ void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
         return;
 
     // Call the current state's handler function
-    (pStateHandlers[*pCurrentState])(pCurrentState, pContext);
+    pStateHandlers[*pCurrentState](pCurrentState, pContext);
 }
 
 
@@ -88,13 +86,11 @@ static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     TMR0_StopTimer();
     TMR0_WriteTimer(0);
     
-    // Print a welcome message on the LCD very right position
+    // Scroll the welcome text from right to left 
     LCD_Clear();
     LCD_SetCursor(LCD_FIRST_LINE, charPos);
     LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
-    __delay_ms(100);
-    
-    // Scroll the welcome text from right to left 
+    __delay_ms(100);    
     for (i = 0; i <= charPos + strlen(getLcdText(LCD_TXT_WELCOME)); i++) {
         LCD_ShiftDisplayLeft();
         __delay_ms(100);    
@@ -140,7 +136,7 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
     LCD_SetCursor(LCD_SECOND_LINE, 5);
     LCD_PrintString(strTemperature);
     LCD_ShiftCursorRight();
-    LCD_PrintCharacter(0xdf) // 0xdf = Celsius degree symbol
+    LCD_PrintCharacter(0xdf); // 0xdf = Celsius degree symbol
     LCD_PrintCharacter('C');        
     
     // Transition to the following state
@@ -166,7 +162,7 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
 
     // Print the pressure value and its unit in the second line
     LCD_SetCursor(LCD_SECOND_LINE, 4);
-    LCD_PrintInteger(hpa);
+    LCD_PrintInteger(hpa, INT_BASE_DECIMAL);
     LCD_ShiftCursorRight();
     LCD_PrintString(getLcdText(LCD_TXT_PRESSURE_UNIT));
     
@@ -188,7 +184,7 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
 
     // Print the altitude value and its unit in the second line
     LCD_SetCursor(LCD_SECOND_LINE, 4);
-    LCD_PrintInteger(pContext->altitude);
+    LCD_PrintInteger(pContext->altitude, INT_BASE_DECIMAL);
     LCD_ShiftCursorRight();
     LCD_PrintString(getLcdText(LCD_TXT_ALTITUDE_UNIT));
     

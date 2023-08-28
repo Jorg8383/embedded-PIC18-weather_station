@@ -27,9 +27,6 @@
 #include "bmp180.h"
 #include "state.h"
 
-void mainInit(void);
-void sysTickRoutine(void);
-
 /******************************************************************************
  * Main application
  ******************************************************************************/
@@ -62,7 +59,7 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
 
-    // Select ADC channel, enable ADC and start conversion
+    // Initialise the ADC conversion for the LCD backlight dimmer potentiometer
     ADCC_StartConversion(RA0_POT);
     TMR2_Start();
     
