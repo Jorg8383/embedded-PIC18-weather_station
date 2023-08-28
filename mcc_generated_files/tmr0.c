@@ -73,8 +73,8 @@ void TMR0_Initialize(void)
     // Clearing IF flag
     PIR0bits.TMR0IF = 0;
 
-    // T0OUTPS 1:16; T0EN enabled; T016BIT 8-bit; 
-    T0CON0 = 0x8F;
+    // T0OUTPS 1:16; T0EN disabled; T016BIT 8-bit; 
+    T0CON0 = 0x0F;
 }
 
 void TMR0_StartTimer(void)

@@ -18,7 +18,7 @@
 
 // Define text messages to be displayed on the LCD
 const char *pText[LCD_NUM_MESSAGES] = {
-    "Welcome to the weather station project!",
+    "Weather Station",
     "Temperature",
     "Pressure",
     "hPa",
