@@ -53,8 +53,6 @@ const char *getLcdText(LcdTextIndex txtIndex) {
 void convertTemperatureToString(int16_t temperature, char *buffer) {
         
     uint8_t i = 0;
-    uint8_t strStart = 0; 
-    uint8_t strEnd;
     _Bool isNegative = false;
     _Bool addZeroDigit = false;
 
@@ -95,14 +93,7 @@ void convertTemperatureToString(int16_t temperature, char *buffer) {
     buffer[i] = '\0';
     
     // Reverse the string to get the correct order
-    strEnd = (uint8_t) strlen(buffer) - 1;
-    while (strStart < strEnd) {
-        char temp = buffer[strStart];
-        buffer[strStart] = buffer[strEnd];
-        buffer[strEnd] = temp;
-        strStart++;
-        strEnd--;
-    }
+    reverseString(*buffer, strlen(buffer));
     
     return;
     
