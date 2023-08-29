@@ -8,11 +8,10 @@
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  * Program version:     1.0
  
- * Program Description:
- * --------------------
- * 
- * Hardware Description:
- * --------------------
+ * Description:
+ * ------------
+ * This module comprises definitions and functionality required to realise a 
+ * finite state machine that defines various device states.
  *    
  */
 

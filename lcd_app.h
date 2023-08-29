@@ -7,6 +7,12 @@
  * Display:             LCD 16x2 - Hitachi HD44780
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
+ * 
+ * Description:
+ * ------------
+ * This module comprises project specific definitions and functionality to 
+ * interface the Hitachi HD44780 LCD (16 x 2 lines).
+ * 
  */
 
 #ifndef LCD_APP_H

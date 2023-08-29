@@ -4,21 +4,18 @@
  * Project:             Weather Station
  * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V
  * Platform:            Curiosity HPC board (DM164136)
+ * Sensor:              Bosch BMP180 barometric pressure sensor
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  * Program version:     1.0
  
- * Program Description:
- * --------------------
+ * Description:
+ * ------------
  * This header file represents an Application Programming Interface (API) for
  * the Bosch BMP180 barometric pressure sensor, allowing to communicate with
- * a PIC microcontroller via I2C. To ensure application code portability across 
+ * a PIC18 microcontroller via I2C. To ensure application code portability across 
  * various Microchip MCU's, this sensor API utilises the Foundation Service 
  * framework which provides fully hardware-abstracted interfaces. 
- * 
- * Hardware Description:
- * --------------------
- * Bosch barometric pressure sensor BMP180 with an I2C interface
  *    
  */
 
@@ -42,7 +39,8 @@ typedef enum {
 /* Debugging: set to simulates the pressure and temperature calculation by
  * using data provided in the example calculation as demonstrated in the BMP180
  * data sheet */
-#define BMP180_DEBUG_USE_DEFAULT_PARAM      0 
+#define BMP180_DEBUG_USE_DEFAULT_PARAM      0
+#define BMP180_DEBUG_COMPILE_TEST           0
 
 /* Data registers to operate the BMP180 */
 #define BMP180_REG_CHIP_ID                  0xD0

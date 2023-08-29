@@ -9,17 +9,15 @@
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  * Program version:     1.0
  
- * Program Description:
- * --------------------
+ * Description:
+ * ------------
  * This header file represents an Application Programming Interface (API) for
- * the LCD of the Hitachi HD44780 (16x2 lines), allowing it to interoperate with
- * a PIC18F47Q10 microcontroller. The communication between the display and 
+ * the Hitachi HD44780 LCD (16x2 lines), allowing it to interoperate with
+ * a PIC18 microcontroller. The communication between the display and 
  * controller is realised via a 4-bit interface, thus transmitting one data byte
- * as two sequential 4-bit transfers. For the 4-bit interface, only four bus 
+ * as two sequential 4-bit transfers. For this 4-bit interface, only four bus 
  * lines (DB4 to DB7) are used for transfer.
  * 
- * Hardware Description:
- * --------------------
  * The Curiosity HPC with a PIC18F47Q10 MCU on board is wired to the HD44780 
  * display as follows:
  * 

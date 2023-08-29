@@ -5,20 +5,15 @@
  * Project:             Weather Station
  * Device:              PIC18F47Q10 @ 16 MHz internal OSC, 5V
  * Platform:            Curiosity HPC board (DM164136)
- * Sensor:              Bosch BMP180 Digital pressure sensor 
+ * Sensor:              Bosch BMP180 barometric pressure sensor 
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  * Program version:     1.0
  
- * Program Description:
- * --------------------
- * This module contains functionality for the the Bosch BMP180 barometric
- * pressure sensor API
- * 
- * 
- * Hardware Description:
- * --------------------
- * Bosch BMP180 barometric pressure sensor
+ * Description:
+ * ------------
+ * This API module contains functionality for the the Bosch BMP180 barometric
+ * pressure sensor
  * 
  */
 
