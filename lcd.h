@@ -44,6 +44,8 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+
+#define LCD_DEBUG_COMPILE_TEST  0
     
 // Project specific IO mapping
 #define LCD_BL          LATDbits.LATD0  // LCD backlight LED

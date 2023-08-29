@@ -11,16 +11,15 @@
  * Program version:     1.0
  
  * Program Description:
+ * --------------------
  * This module contains test cases for HD44780 API functions provided by lcd.c 
- * 
- * Hardware Description:
- * xxx
- * 
 */
 
 #include <stdio.h>
 #include <string.h>
 #include "lcd.h"
+
+#if LCD_DEBUG_COMPILE_TEST
 
 char *pDisplayText[] = {
     "Weather Station", // Index 0
@@ -45,24 +44,17 @@ static void testShiftDisplayRight(void);
 static void testShiftCursor(void);
 
 
-/******************************************************************************
- * Function: Test routine
- * 
- * Returns: Nothing
- * 
- * Description: 
- ******************************************************************************/
 void LCD_TestRoutine(void) {
 
-//    LCD_Clear();
-//    testPrintStringInFirstLine();
-//    testPrintStringInSecondLine();
-//    __delay_ms(1000);
-//    testShiftDisplayLeft();
-//    testShiftDisplayRight();
-//    __delay_ms(1000);
-//    testPrintStringCentered();
-//    testPrintCharInFirstLine();
+    LCD_Clear();
+    testPrintStringInFirstLine();
+    testPrintStringInSecondLine();
+    __delay_ms(1000);
+    testShiftDisplayLeft();
+    testShiftDisplayRight();
+    __delay_ms(1000);
+    testPrintStringCentered();
+    testPrintCharInFirstLine();
 
     testPrintInteger();
 }
@@ -177,3 +169,5 @@ static void testShiftCursor(void) {
     LCD_PrintCharacter('x');    
     __delay_ms(3000);  
 }
+
+#endif
