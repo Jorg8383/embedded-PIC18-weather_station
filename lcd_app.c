@@ -8,7 +8,6 @@
  * Display:             LCD 16x2 - Hitachi HD44780
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
- * Program version:     1.0
  
  * Program Description:
  * --------------------
@@ -93,8 +92,8 @@ void convertTemperatureToString(int16_t temperature, char *buffer) {
     buffer[i] = '\0';
     
     // Reverse the string to get the correct order
-    reverseString(*buffer, strlen(buffer));
-    
+    reverseString(buffer, strlen(buffer));
+        
     return;
     
 }
