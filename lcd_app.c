@@ -11,6 +11,9 @@
  * Program version:     1.0
  
  * Program Description:
+ * --------------------
+ * This module comprises project specific definitions and functionality to 
+ * interface the Hitachi HD44780 LCD (16 x 2 lines).
  * 
 */
 
@@ -30,7 +33,9 @@ const char *pText[LCD_NUM_MESSAGES] = {
     "COMM error",
 };
 
-// Function that returns a pointer to the text according to passed text index 
+/******************************************************************************* 
+ * Function that returns a pointer to the text according to passed text index
+ ******************************************************************************/
 const char *getLcdText(LcdTextIndex txtIndex) {
     
     char *errorTxt = "Invalid text";
@@ -42,7 +47,9 @@ const char *getLcdText(LcdTextIndex txtIndex) {
     }
 }
 
-// Function that converts the temperature to a string with one decimal place
+/******************************************************************************* 
+ * Function that converts the temperature to a string with one decimal place
+ ******************************************************************************/
 void convertTemperatureToString(int16_t temperature, char *buffer) {
         
     uint8_t i = 0;
@@ -101,7 +108,9 @@ void convertTemperatureToString(int16_t temperature, char *buffer) {
     
 }
 
-// Function that reverses a string
+/******************************************************************************* 
+ * Function that reverses a string
+ ******************************************************************************/
 static void reverseString(char str[], uint16_t length) {
     
     uint16_t start = 0;
@@ -116,7 +125,9 @@ static void reverseString(char str[], uint16_t length) {
     }
 }
 
-// Function that converts an integer to a string
+/******************************************************************************* 
+ * Function that converts an integer to a string
+ ******************************************************************************/
 char* itoa(int32_t num, char str[], int16_t maxSize) {
 
     uint16_t i = 0;
