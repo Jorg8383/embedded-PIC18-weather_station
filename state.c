@@ -111,7 +111,7 @@ static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
 static void stateUpdateMeasurement(DeviceState *pCurrentState, 
         DeviceContext *pContext){
     
-    uint32_t rawTemperature;
+    uint16_t rawTemperature;
    
     // Get raw sensor data and calculate temperature, pressure and altitude
     rawTemperature = BMP180_ReadRawTemperature();
@@ -119,7 +119,7 @@ static void stateUpdateMeasurement(DeviceState *pCurrentState,
     pContext->pressure = BMP180_CalcPressure(BMP180_ReadRawPressure(), 
             rawTemperature);
     pContext->altitude = BMP180_CalcAltitude(pContext->pressure);
-            
+    
     // Transition to the following state
     (*pCurrentState)++; 
 }

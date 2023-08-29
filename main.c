@@ -27,6 +27,9 @@
 #include "bmp180.h"
 #include "state.h"
 
+// Global variables
+BMP180_PARAM bmp180param;
+
 /******************************************************************************
  * Main application
  ******************************************************************************/
@@ -34,10 +37,8 @@ void main(void)
 {
     DeviceState currentState;
     DeviceContext deviceContext;
-    BMP180_PARAM bmp180;
     _Bool sensorInitFailed = false;
 
-    
     /***************************************************************************
      * Main initialisation routine 
      **************************************************************************/       
@@ -71,7 +72,7 @@ void main(void)
     __delay_ms(500);
     
     // Initialise the BMP180 barometric pressure sensor
-    if (BMP180_Init(&bmp180) != 0) {
+    if (BMP180_Init(&bmp180param) != 0) {
         sensorInitFailed = true;
         LCD_Clear();
         LCD_PrintString(getLcdText(LCD_TXT_ERROR_SENSOR));
