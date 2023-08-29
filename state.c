@@ -17,6 +17,8 @@
 #include "lcd.h"
 #include "lcd_app.h"
 
+// Global variables
+static _Bool stateHasChanged;
 
 // Function prototypes for state handler functions
 static void stateInit(DeviceState *pCurrentState, 
@@ -68,12 +70,19 @@ void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
 // Function to run the state machine and invoke the current state function
 void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
     
+    static DeviceState prevState;
+    
     // Check for null pointers
     if (pContext == 0 || pCurrentState == 0)
         return;
 
     // Call the current state's handler function
     pStateHandlers[*pCurrentState](pCurrentState, pContext);
+
+    // Set a flag if the state has changed
+    stateHasChanged = (prevState != *pCurrentState) ? true : false;
+    prevState = *pCurrentState;
+    
 }
 
 
@@ -81,10 +90,7 @@ static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     uint8_t i;
     uint8_t cursorPos;
-   
-    // Initialise Timer0
-//    TMR0_StopTimer();
-    
+       
     // Scroll the welcome text from right to left 
     cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_WELCOME)));
     LCD_Clear();
@@ -196,18 +202,9 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
 
 
 static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
-    
-//    __delay_ms(3000);
-//    (*pCurrentState)++;
-
-    TMR0_StartTimer();
-    
-    if (TMR0_HasOverflowOccured()){
-        TMR0_StopTimer();
-        PIR0bits.TMR0IF = 0;
-        // Transition to the following state
-        (*pCurrentState)++; 
-    }    
+   
+    __delay_ms(3000);
+    (*pCurrentState)++;
 }
 
 
