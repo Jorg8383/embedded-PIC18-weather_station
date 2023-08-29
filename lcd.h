@@ -107,16 +107,156 @@ typedef enum {
     LCD_REG_DATA       
 } LCD_REG_TYPE;
     
-// Function prototypes
+/******************************************************************************* 
+ * Function to initialise the LCD display
+ ******************************************************************************/
+/*
+ * @brief This function needs to be invoked once to initialise the LCD. It
+ * initialises the interface, the function set, the display control, and the
+ * entry mode set.
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_Init(void);
+
+
+/******************************************************************************* 
+ * Function to clear the LCD display
+ ******************************************************************************/
+/*
+ * @brief This function clears the both lines of the LCD display.
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_Clear(void);
+
+
+/******************************************************************************* 
+ * Function to set the cursor position on the LCD display
+ ******************************************************************************/
+/*
+ * @brief This function sets the cursor at the line and position defined by the 
+ * user. 
+ * 
+ * @param cursor line, position offset
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset);
+
+
+/******************************************************************************* 
+ * Function to shift the display to the right
+ ******************************************************************************/
+/*
+ * @brief By invoking this function once, both lines of the display are shifted 
+ * by one position to the right. This routine shifts the display to the right 
+ * without writing or reading data. When the displayed data is shifted repeatedly
+ * each line moves only horizontally. The second line display does not shift
+ * into the first line position.
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_ShiftDisplayRight(void);
+
+
+/******************************************************************************* 
+ * Function to the shift the display to the left
+ ******************************************************************************/
+/*
+ * @brief By invoking this function once, both lines of the display are shifted 
+ * by one position to the left. This routine shifts the display to the left 
+ * without writing or reading data. When the displayed data is shifted repeatedly
+ * each line moves only horizontally. The second line display does not shift
+ * into the first line position.
+ * 
+ * @param 
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_ShiftDisplayLeft(void);
+
+
+/******************************************************************************* 
+ * Function to shift the cursor to the right
+ ******************************************************************************/
+/*
+ * @brief This routine shifts the cursor by one position to the right 
+ * without changing DDRAM contents
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_ShiftCursorRight(void);
+
+
+/******************************************************************************* 
+ * Function to shift the cursor to the left 
+ ******************************************************************************/
+/*
+ * @brief This routine shifts the cursor by one position to the left 
+ * without changing DDRAM contents
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_ShiftCursorLeft(void);
+
+
+/******************************************************************************* 
+ * Function to print a character on the LCD display
+ ******************************************************************************/
+/*
+ * @brief This function prints a character on the LCD display
+ * 
+ * @param char
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_PrintCharacter(char input);
+
+
+/******************************************************************************* 
+ * Function to print a string on the LCD display
+ ******************************************************************************/
+/*
+ * @brief This function prints a string on the LCD display
+ * 
+ * @param pointer to char
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_PrintString(const char *input);
+
+
+/******************************************************************************* 
+ * Function to print an integer value on the LCD display
+ ******************************************************************************/
+/*
+ * @brief This function prints a integer value on the LCD display
+ * 
+ * @param number, base (decimal, hexadecimal, octal) 
+ * 
+ * @return void 
+ * 
+*/
 extern void LCD_PrintInteger(int16_t number, uint8_t intBase);
 
 #ifdef	__cplusplus
