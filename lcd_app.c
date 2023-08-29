@@ -16,6 +16,9 @@
 
 #include "lcd_app.h"
 
+// Define local function prototypes
+static void reverseString(char str[], uint16_t length);
+
 // Define text messages to be displayed on the LCD
 const char *pText[LCD_NUM_MESSAGES] = {
     "Weather Station",
@@ -96,4 +99,63 @@ void convertTemperatureToString(int16_t temperature, char *buffer) {
     
     return;
     
+}
+
+// Function that reverses a string
+static void reverseString(char str[], uint16_t length) {
+    
+    uint16_t start = 0;
+    uint16_t end = length - 1;
+    
+    while (start < end) {
+        char temp = str[start];
+        str[start] = str[end];
+        str[end] = temp;
+        start++;
+        end--;
+    }
+}
+
+// Function that converts an integer to a string
+char* itoa(int32_t num, char str[], int16_t maxSize) {
+
+    uint16_t i = 0;
+    _Bool isNegative = false;
+
+    // Handle negative numbers
+    if (num < 0) {
+        isNegative = 1;
+        num *= -1;
+    }
+
+    // Ensure there is enough space in the string
+    if (maxSize <= 0) {
+        return NULL;
+    }
+
+    // Convert the integer to a string
+    do {
+        // Check if there is enough space in the string
+        if (i >= maxSize - 1) {
+            return NULL;
+        }
+
+        str[i++] = '0' + (num % 10);
+        num /= 10;
+    } while (num > 0);
+
+    // Add a negative sign if necessary
+    if (isNegative) {
+        if (i >= maxSize - 1) {
+            return NULL;
+        }
+        str[i++] = '-';
+    }
+
+    str[i] = '\0';
+
+    // Reverse the string to get the correct order of digits
+    reverseString(str, i);
+
+    return str;
 }

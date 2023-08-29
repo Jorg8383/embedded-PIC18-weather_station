@@ -89,12 +89,10 @@ void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
 static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     uint8_t i;
-    uint8_t cursorPos;
        
     // Scroll the welcome text from right to left 
-    cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_WELCOME)));
     LCD_Clear();
-    LCD_SetCursor(LCD_FIRST_LINE, cursorPos);
+    LCD_SetCursor(LCD_FIRST_LINE, 0);
     LCD_PrintString(getLcdText(LCD_TXT_WELCOME));
     __delay_ms(1000);
    
@@ -134,11 +132,12 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
     
     // Print the headline "Temperature" in the centre of the first line
     LCD_Clear();
-    cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_TEMPERATURE))) / 2;
+    cursorPos = (uint8_t)(LCD_CHAR_LENGTH 
+            - strlen(getLcdText(LCD_TXT_TEMPERATURE))) / 2;
     LCD_SetCursor(LCD_FIRST_LINE, cursorPos);
     LCD_PrintString(getLcdText(LCD_TXT_TEMPERATURE));
 
-    // Print the temperature value and its unit in the second line
+    // Print the temperature value and its unit in the centre of the second line
     convertTemperatureToString(pContext->temperature, strTemperature);
     cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(strTemperature) - 3) / 2;    
     LCD_SetCursor(LCD_SECOND_LINE, cursorPos);
@@ -158,18 +157,23 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
     
     uint8_t cursorPos;
     int16_t hpa; // Pressure in hPa (100 Pa = 1 hPa = 1 mbar)
+    char itoaBuffer[12];
    
     // Convert Pa to hPa
     hpa = pContext->pressure / 100; // convert Pa to hPa
     
     // Print the headline "Pressure" in the centre of the first line
     LCD_Clear();
-    cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_PRESSURE))) / 2;
+    cursorPos = (uint8_t)(LCD_CHAR_LENGTH 
+            - strlen(getLcdText(LCD_TXT_PRESSURE))) / 2;
     LCD_SetCursor(LCD_FIRST_LINE, cursorPos);
     LCD_PrintString(getLcdText(LCD_TXT_PRESSURE));
 
-    // Print the pressure value and its unit in the second line
-    LCD_SetCursor(LCD_SECOND_LINE, 4);
+    // Print the pressure value and its unit in the centre of the second line
+    cursorPos = (uint8_t)(LCD_CHAR_LENGTH 
+            - strlen(itoa(hpa, itoaBuffer, sizeof(itoaBuffer)))
+            - strlen(getLcdText(LCD_TXT_PRESSURE_UNIT))) / 2;    
+    LCD_SetCursor(LCD_SECOND_LINE, cursorPos);
     LCD_PrintInteger(hpa, INT_BASE_DECIMAL);
     LCD_ShiftCursorRight();
     LCD_PrintString(getLcdText(LCD_TXT_PRESSURE_UNIT));
@@ -183,15 +187,20 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
         DeviceContext *pContext) 
 {
     uint8_t cursorPos;
+    char itoaBuffer[12];
    
     // Print the headline "Altitude" in the centre of the first line
     LCD_Clear();
-    cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(getLcdText(LCD_TXT_ALTITUDE))) / 2;
+    cursorPos = (uint8_t)(LCD_CHAR_LENGTH 
+            - strlen(getLcdText(LCD_TXT_ALTITUDE))) / 2;
     LCD_SetCursor(LCD_FIRST_LINE, cursorPos);
     LCD_PrintString(getLcdText(LCD_TXT_ALTITUDE));
 
-    // Print the altitude value and its unit in the second line
-    LCD_SetCursor(LCD_SECOND_LINE, 3);
+    // Print the altitude value and its unit in the centre of the second line
+    cursorPos = (uint8_t)(LCD_CHAR_LENGTH 
+            - strlen(itoa(pContext->altitude, itoaBuffer, sizeof(itoaBuffer)))
+            - strlen(getLcdText(LCD_TXT_ALTITUDE_UNIT))) / 2;    
+    LCD_SetCursor(LCD_SECOND_LINE, cursorPos);
     LCD_PrintInteger(pContext->altitude, INT_BASE_DECIMAL);
     LCD_ShiftCursorRight();
     LCD_PrintString(getLcdText(LCD_TXT_ALTITUDE_UNIT));

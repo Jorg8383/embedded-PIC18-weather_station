@@ -32,6 +32,7 @@ typedef enum {
 
 // Function prototypes
 void convertTemperatureToString(int16_t temperature, char *buffer);
+char* itoa(int32_t num, char str[], int16_t maxSize);
 const char *getLcdText(LcdTextIndex txtIndex);
 
 
