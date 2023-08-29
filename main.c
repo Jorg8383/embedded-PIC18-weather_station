@@ -7,13 +7,22 @@
  * Platform:            Curiosity HPC board (DM164136)
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
- * Program version:     1.0
  
- * Program Description:
- * xxx
+ * Description:
+ * ------------
+ * This weather station project demonstrates the implementation of two APIs to
+ * communicate with the Hitachi HD44780 LCD via a 4-bit interface and the Bosch
+ * BMP180 barometric pressure sensor via I2C. The raw temperature and pressure
+ * values are read from the sensor, and based on this raw data, true temperature
+ * and pressure values are calculated and then displayed on the LCD.
+ * In addition, the altitude is calculated based on the pressure value. These 
+ * three values are updated and displayed periodically using a finite state 
+ * machine based on function pointers, representing the internal device state.
  * 
- * Hardware Description:
- * xxx
+ * External peripherals:
+ * ---------------------
+ * - Hitachi HD44780 LCD (16 x 2 lines) via 4-bit interface
+ * - Bosch BMP180 barometric pressure sensor via I2C interface
  * 
 */
 

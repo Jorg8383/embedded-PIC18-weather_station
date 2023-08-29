@@ -8,7 +8,6 @@
  * Display:             LCD 16x2 - Hitachi HD44780
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
- * Program version:     1.0
  
  * Program Description:
  * --------------------

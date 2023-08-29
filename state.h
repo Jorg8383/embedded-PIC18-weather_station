@@ -6,12 +6,11 @@
  * Platform:            Curiosity HPC board (DM164136)
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
- * Program version:     1.0
  
  * Description:
  * ------------
  * This module comprises definitions and functionality required to realise a 
- * finite state machine that defines various device states.
+ * finite state machine, which defines various device states.
  *    
  */
 
@@ -43,8 +42,32 @@ typedef struct {
 // Function pointer type for state handler functions
 typedef void (*stateHandler)(DeviceState*, DeviceContext*);
 
-// Function prototypes for state machine functions
+/******************************************************************************* 
+ * Function to initialise the finite state machine
+ ******************************************************************************/
+/*
+ * @brief This initialisation function needs to be invoked once 
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext);
+
+
+/******************************************************************************* 
+ * Function to run the finite state machine
+ ******************************************************************************/
+/*
+ * @brief This drives the finite state machine and needs to be invoked
+ * cyclically
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext);
 
 

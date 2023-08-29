@@ -8,8 +8,10 @@
  * Compiler:            XC8 (v2.41)
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  
- * Program Description:
- * 
+ * Description:
+ * ------------
+ * This module comprises definitions and functionality required to realise a 
+ * finite state machine, which defines various device states.
 */
 
 #include "state.h"
