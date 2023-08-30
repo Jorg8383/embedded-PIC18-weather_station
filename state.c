@@ -321,7 +321,11 @@ static void stateDisplayWeatherTrend(DeviceState *pCurrentState,
     movingAveragePa = calcPressureMovingAverage();
     upwardThresholdPa = (movingAveragePa * 1) / 100; // 1% higher
     downwardThresholdPa = (movingAveragePa * 1) / 100; // 1% lower
-    delta_hPa = (int16_t)((pContext->pressure - movingAveragePa) / 100);
+    if (numberOfValidReadings > 0){
+        delta_hPa = (int16_t)((pContext->pressure - movingAveragePa) / 100);    
+    } else {
+        delta_hPa = 0;
+    }
     
     // Evaluate the weather trend and pick the appropriate text to be displayed
     if (numberOfValidReadings > 0 && 

@@ -349,6 +349,7 @@ void LCD_ShiftCursorLeft(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
     LCD_Write(0x10, LCD_REG_CMD);
+    return;
 }
 
 
@@ -376,6 +377,7 @@ void LCD_PrintInteger(int16_t number, uint8_t intBase) {
         buffer[i++] = '0';
         buffer[i] = '\0'; // add null terminating character
         LCD_PrintString(buffer); // Print the string on the display
+        return;
     }
     
     // Handle negative numbers with a base of 10
@@ -401,6 +403,7 @@ void LCD_PrintInteger(int16_t number, uint8_t intBase) {
     buffer[i] = '\0'; // Append a null terminating character
     LCD_ReverseString(buffer, i);
     LCD_PrintString(buffer); // Print the string on the display   
+    return;
 }
 
 
@@ -417,6 +420,7 @@ static void LCD_ReverseString(char str[], uint16_t length) {
         endPos--;
         startPos++;
     }
+    return;
 }
 
 
@@ -439,6 +443,7 @@ static void LCD_ReadDataNibble(uint8_t *pReturnValue) {
     *pReturnValue = LCD_DATA_PORT & DATA_PORT_INPUT_PATTERN;
     LCD_EN = 0;
     __delay_us(RW_TRIGGER_DELAY);
+    return;
 }
 
 
