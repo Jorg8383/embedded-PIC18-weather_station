@@ -35,6 +35,7 @@
 #include "lcd_app.h"
 #include "bmp180.h"
 #include "state.h"
+#include "trend.h"
 
 // Global variables
 BMP180_PARAM bmp180param;
@@ -75,6 +76,10 @@ void main(void)
     
     // Initialise the internal state machine
     initStateMachine(&currentState, &deviceContext);
+    
+    // Initialise pressure recordings
+    initPressureReadings();
+    TMR0_SetInterruptHandler(&timer0ISR);
     
     // Initialise the LCD display
     LCD_Init();

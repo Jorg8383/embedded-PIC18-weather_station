@@ -18,7 +18,7 @@
 
 // Global variables
 volatile _Bool updatePressureReading;
-uint32_t pressureReadings[MOVING_AVERAGE_WINDOW_SIZE];
+int32_t pressureReadings[MOVING_AVERAGE_WINDOW_SIZE];
 uint8_t numberOfValidReadings = 0;
 
 
@@ -30,10 +30,10 @@ void initPressureReadings(void) {
 }
 
 
-uint32_t calcPressureMovingAverage(void) {
+int32_t calcPressureMovingAverage(void) {
     
-    uint32_t sum = 0;
-    uint32_t result = 0;
+    int32_t sum = 0;
+    int32_t result = 0;
     
     for (uint8_t i = 0 ; i < numberOfValidReadings ; i++) {
         sum += pressureReadings[i];
@@ -46,9 +46,9 @@ uint32_t calcPressureMovingAverage(void) {
 }
 
 
-void updatePressureReadings(uint32_t pressure) {
+void updatePressureReadings(int32_t pressure) {
 
-    uint8_t currentReadingIndex = 0;
+    static uint8_t currentReadingIndex = 0;
     
     pressureReadings[currentReadingIndex++] = pressure;
     if (currentReadingIndex >= MOVING_AVERAGE_WINDOW_SIZE)

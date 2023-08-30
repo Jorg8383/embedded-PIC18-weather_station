@@ -18,6 +18,7 @@
 #include "bmp180.h"
 #include "lcd.h"
 #include "lcd_app.h"
+#include "trend.h"
 
 // Global variables
 static _Bool stateHasChanged;
@@ -32,6 +33,8 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
 static void stateDisplayPressure(DeviceState *pCurrentState, 
         DeviceContext *pContext);
 static void stateDisplayAltitude(DeviceState *pCurrentState,
+        DeviceContext *pContext);
+static void stateDisplayWeatherTrend(DeviceState *pCurrentState, 
         DeviceContext *pContext);
 static void stateWait(DeviceState *pCurrentState,
         DeviceContext *pContext);
@@ -48,6 +51,8 @@ static void (*const pStateHandlers[])(DeviceState*, DeviceContext*) = {
     &stateWait,
     &stateDisplayAltitude,
     &stateWait,
+    &stateDisplayWeatherTrend,
+    &stateWait,            
     &stateFinal
 };
 
@@ -109,7 +114,7 @@ void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
 }
 
 /******************************************************************************* 
- * State: Init 
+ * State: Initialise 
  ******************************************************************************/
 /*
  * @brief This state is the initialisation routine of the state machine
@@ -162,6 +167,10 @@ static void stateUpdateMeasurement(DeviceState *pCurrentState,
     pContext->pressure = BMP180_CalcPressure(BMP180_ReadRawPressure(), 
             rawTemperature);
     pContext->altitude = BMP180_CalcAltitude(pContext->pressure);
+    
+    if (updatePressureReading) {
+        updatePressureReadings(pContext->pressure);
+    }
     
     // Transition to the following state
     (*pCurrentState)++; 
@@ -222,12 +231,12 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
         DeviceContext *pContext)
 {
     
-    uint8_t cursorPos;
     int16_t hpa; // Pressure in hPa (100 Pa = 1 hPa = 1 mbar)
+    uint8_t cursorPos;
     char itoaBuffer[12];
    
     // Convert Pa to hPa
-    hpa = pContext->pressure / 100; // convert Pa to hPa
+    hpa = (int16_t)(pContext->pressure / 100); // convert Pa to hPa
     
     // Print the headline "Pressure" in the centre of the first line
     LCD_Clear();
@@ -286,7 +295,68 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
     (*pCurrentState)++; 
 }
 
+
 /******************************************************************************* 
+ * State: Display Weather Trend
+ ******************************************************************************/
+/*
+ * @brief This state displays the weather trend
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
+static void stateDisplayWeatherTrend(DeviceState *pCurrentState,
+        DeviceContext *pContext) 
+{
+    
+    int32_t movingAveragePa, upwardThresholdPa, downwardThresholdPa;
+    int16_t delta_hPa;
+    LcdTextIndex trendTxt;
+    uint8_t cursorPos;
+    char itoaBuffer[5];
+    
+    // Calculate pressure moving average, thresholds and delta pressure   
+    movingAveragePa = calcPressureMovingAverage();
+    upwardThresholdPa = (movingAveragePa * 1) / 100; // 1% higher
+    downwardThresholdPa = (movingAveragePa * 1) / 100; // 1% lower
+    delta_hPa = (int16_t)((pContext->pressure - movingAveragePa) / 100);
+    
+    // Evaluate the weather trend and pick the appropriate text to be displayed
+    if (numberOfValidReadings > 0 && 
+            pContext->pressure > (movingAveragePa + upwardThresholdPa)) {
+        trendTxt = LCD_TXT_TREND_UPWARD; // upward trend
+    } else if (numberOfValidReadings > 0 &&
+            pContext->pressure < (movingAveragePa - downwardThresholdPa)) {
+        trendTxt = LCD_TXT_TREND_DOWNWARD; // downward trend
+    } else {
+        trendTxt = LCD_TXT_TREND_STABLE;
+    }
+           
+    // Display the weather trend in the first line
+    LCD_Clear();
+    LCD_SetCursor(LCD_FIRST_LINE, 0);
+    LCD_PrintString(getLcdText(LCD_TXT_WEATHER_TREND));
+    LCD_ShiftCursorRight();
+    LCD_PrintString(getLcdText(trendTxt));
+    
+    // Display delta hPa and number of reading samples in the second line
+    LCD_SetCursor(LCD_SECOND_LINE, 0);
+    LCD_PrintString(getLcdText(LCD_TXT_DELTA_PRESSURE));
+    LCD_PrintInteger(delta_hPa, INT_BASE_DECIMAL);
+    LCD_ShiftCursorRight();
+    LCD_PrintString(getLcdText(LCD_TXT_PRESSURE_UNIT));    
+    cursorPos = (uint8_t)(LCD_CHAR_LENGTH - strlen(itoa(numberOfValidReadings,
+            itoaBuffer, sizeof(itoaBuffer))));
+    LCD_SetCursor(LCD_SECOND_LINE, cursorPos);
+    LCD_PrintInteger(numberOfValidReadings, INT_BASE_DECIMAL);
+        
+    // Transition to the following state
+    (*pCurrentState)++;
+    
+    
+}/******************************************************************************* 
  * State: Wait
  ******************************************************************************/
 /*
@@ -299,7 +369,8 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
 */
 static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
    
-    __delay_ms(3000);
+    __delay_ms(4000);
+    // Transition to the following state
     (*pCurrentState)++;
 }
 

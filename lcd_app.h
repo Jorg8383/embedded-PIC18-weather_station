@@ -33,6 +33,11 @@ typedef enum {
     LCD_TXT_ALTITUDE,
     LCD_TXT_ALTITUDE_UNIT, 
     LCD_TXT_ERROR_SENSOR,
+    LCD_TXT_WEATHER_TREND,
+    LCD_TXT_TREND_UPWARD,
+    LCD_TXT_TREND_DOWNWARD,
+    LCD_TXT_TREND_STABLE,
+    LCD_TXT_DELTA_PRESSURE,
     LCD_NUM_MESSAGES // This entry has to be the last!   
 } LcdTextIndex;
 

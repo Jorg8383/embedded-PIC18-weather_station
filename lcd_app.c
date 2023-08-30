@@ -30,6 +30,13 @@ const char *pText[LCD_NUM_MESSAGES] = {
     "Altitude",
     "metres",
     "COMM error",
+    "Wx is",
+    "improving",
+    "worsening",
+    "stable",
+    "dP="
+    
+    
 };
 
 /******************************************************************************* 

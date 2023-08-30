@@ -19,9 +19,12 @@
 
 #define MOVING_AVERAGE_WINDOW_SIZE 120 // 120 minutes
 
+extern volatile _Bool updatePressureReading;
+extern uint8_t numberOfValidReadings;
+
 void initPressureReadings(void);
-uint32_t calcPressureMovingAverage(void);
-void updatePressureReadings(uint32_t pressure);
+int32_t calcPressureMovingAverage(void);
+void updatePressureReadings(int32_t pressure);
 void timer0ISR(void);
 
 #ifdef	__cplusplus
