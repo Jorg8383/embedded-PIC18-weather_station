@@ -10,14 +10,22 @@
  
  * Description:
  * ------------
- * This weather station project demonstrates the implementation of two APIs to
- * communicate with the Hitachi HD44780 LCD via a 4-bit interface and the Bosch
- * BMP180 barometric pressure sensor via I2C. The raw temperature and pressure
- * values are read from the sensor, and based on this raw data, true temperature
- * and pressure values are calculated and then displayed on the LCD.
- * In addition, the altitude is calculated based on the pressure value. These 
- * three values are updated and displayed periodically using a finite state 
- * machine based on function pointers, representing the internal device state.
+ * This weather station project demonstrates the implementation of two APIs,
+ * enabling to communicate with the Hitachi HD44780 LCD via a 4-bit interface
+ * and with the Bosch BMP180 barometric pressure sensor via I2C. 
+ * 
+ * The raw temperature and pressure values are read from the sensor, and based
+ * on this raw data, true temperature and pressure values are calculated and
+ * then displayed on the LCD. Also, the altitude is calculated based on the
+ * pressure value.
+ * 
+ * Moreover, the weather trend is evaluated and displayed based on the pressure
+ * change over time. To evaluate the weather trend, a moving average algorithm
+ * is implemented, allowing to indicate whether the weather is improving,
+ * worsening, or is remaining stable. 
+ * 
+ * The internal device state is realised by a finite state machine based on 
+ * function pointers.
  * 
  * External peripherals:
  * ---------------------

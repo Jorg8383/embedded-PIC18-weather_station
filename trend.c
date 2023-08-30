@@ -10,7 +10,8 @@
  
  * Description:
  * ------------
- * 
+ * This module contains functions for recording pressure reading samples and for
+ * calculating the moving average across these pressure values. 
 */
 
 
@@ -22,6 +23,17 @@ int32_t pressureReadings[MOVING_AVERAGE_WINDOW_SIZE];
 uint8_t numberOfValidReadings = 0;
 
 
+/******************************************************************************* 
+ * Function to initialise the pressure readings array
+ ******************************************************************************/
+/*
+ * @brief This function initialises the pressure reading array
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 void initPressureReadings(void) {
     
     for (uint8_t i = 0 ; i < MOVING_AVERAGE_WINDOW_SIZE ; i++) {
@@ -30,6 +42,18 @@ void initPressureReadings(void) {
 }
 
 
+/******************************************************************************* 
+ * Function to calculate the moving pressure average
+ ******************************************************************************/
+/*
+ * @brief This function calculates the moving pressure average bases on the
+ * number of reading samples.
+ * 
+ * @param None
+ * 
+ * @return moving average (uint32_t)
+ * 
+*/
 int32_t calcPressureMovingAverage(void) {
     
     int32_t sum = 0;
@@ -45,7 +69,19 @@ int32_t calcPressureMovingAverage(void) {
     return result;
 }
 
-
+/******************************************************************************* 
+ * Function to update pressure readings
+ ******************************************************************************/
+/*
+ * @brief This function updates the pressure readings by adding a new value to
+ * the pressure readings array. In case the array is fully populated, the oldest
+ * data entry will be overwritten.
+ * 
+ * @param None
+ * 
+ * @return moving average (uint32_t)
+ * 
+*/
 void updatePressureReadings(int32_t pressure) {
 
     static uint8_t currentReadingIndex = 0;
@@ -59,7 +95,18 @@ void updatePressureReadings(int32_t pressure) {
     updatePressureReading = false;
 }
 
-
+/******************************************************************************* 
+ * Interrupt service routine for timer 0
+ ******************************************************************************/
+/*
+ * @brief This ISR is invoked every minute by timer 0 to set a flag for updating
+ * the pressure readings.
+ * 
+ * @param None
+ * 
+ * @return moving average (uint32_t)
+ * 
+*/
 void timer0ISR(void) {
     
     updatePressureReading = true;
