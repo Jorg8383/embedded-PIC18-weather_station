@@ -10,19 +10,14 @@
  * IDE:                 MPLAB X (v6.10), MCC (5.3.7)
  * Program version:     1.0
  
- * Program Description:
+ * Description:
+ * ------------
  * This module represents an Application Programming Interface (API) for the LCD
  * of the Hitachi HD44780 (16x2 lines), allowing it to interoperate with a 
  * PIC18F47Q10 microcontroller. The communication between the display and 
  * controller is realised via a 4-bit interface, thus transmitting one data byte
  * as two sequential 4-bit transfers. For the 4-bit interface, only four bus 
  * lines (DB4 to DB7) are used for transfer.
- * 
- * 
- * Hardware Description:
- * MCU: PIC18F47Q10
- * LCD: Hitachi HD44780 (16 x 2 lines)
- * 
 */
 
 #include "mcc_generated_files/mcc.h"
@@ -38,19 +33,24 @@ static _Bool LCD_IsIdle(void);
 
 static _Bool checkBusyBit;
 
-/******************************************************************************
- * Function: LCD_SendNibbleBits(char input)
- *
- * Returns: Nothing
- * 
- * Description: Sets the data ports (4-bit) according to the provided hex value.
+
+/******************************************************************************* 
+ * Function to transfer one nibble to the LCD
+ ******************************************************************************/
+/*
+ * @brief Sets the data ports (4-bit) according to the provided hex value.
  * For 4-bit interface data, only four bus lines (DB4 to DB7) are used for the 
  * transfer. Bus lines DB0 to DB3 are disabled. The data transfer between the 
  * HD44780U and the MPU is completed after the 4-bit data has been transferred 
  * twice. As for the order of data transfer, the four high order bits 
  * (for 8-bit operation, DB4 to DB7) are transferred before the four low order 
  * bits (for 8-bit operation, DB0 to DB3)
- ******************************************************************************/
+ * 
+ * @param input (char)
+ * 
+ * @return void 
+ * 
+*/
 static void LCD_TransferNibbleBits(char input) {
     
     // Use the ternary operator to decode the nibble bits to be sent
@@ -67,15 +67,19 @@ static void LCD_TransferNibbleBits(char input) {
 }
 
 
-/******************************************************************************
- * Function: LCD_Write(char input, LCD_REG_TYPE regType, _Bool checkBusyBit)
- *
- * Returns: Nothing
- * 
- * Description: This routine selects the provided register type (instruction OR 
- * data) and transmits the provided input instruction/data (8-bit) as two
- * consecutive nibble transfers.
+/******************************************************************************* 
+ * Function to write one byte to the LCD data/instruction register 
  ******************************************************************************/
+/*
+ * @brief This routine selects the provided register type (instruction OR 
+ * data) and transmits the provided input instruction/data (8-bit) as two
+ * consecutive nibble transfers..
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 static void LCD_Write(char input, LCD_REG_TYPE regType) {
     
     // RS = 0 --> instruction register, RS = 1 --> data register
@@ -88,15 +92,20 @@ static void LCD_Write(char input, LCD_REG_TYPE regType) {
      
 }
 
-/******************************************************************************
- * Function: LCD_IsIdle(void)
- *
- * Returns: "true" if LCD is idle 
- * 
- * Description: This routine indicates whether the LCD is currently executing
- * an instruction. If so, the busy (DB7) flag is 1, and no other instruction 
- * will be accepted. 
+
+/******************************************************************************* 
+ * Function to check whether LCD is busy
  ******************************************************************************/
+/*
+ * @brief This routine indicates whether the LCD is currently executing
+ * an instruction. If so, the busy (DB7) flag is 1, and no other instruction 
+ * will be accepted.
+ * 
+ * @param None
+ * 
+ * @return True if LCD is idle 
+ * 
+*/
 static _Bool LCD_IsIdle(void) {
 
     const uint16_t MAX_RETRY_COUNT = 500;
@@ -118,13 +127,19 @@ static _Bool LCD_IsIdle(void) {
     return true; 
 }
 
-/******************************************************************************
- * Function: LCD_Init(void)
- *
- * Returns: Nothing
- * 
- * Description: Initialises the LCD
+/******************************************************************************* 
+ * Function to initialise the LCD display
  ******************************************************************************/
+/*
+ * @brief This function needs to be invoked once to initialise the LCD. It
+ * initialises the interface, the function set, the display control, and the
+ * entry mode set.
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 void LCD_Init(void) {
 
     LATD = LATD & 0x0F; // Reset data bit interface pins
@@ -159,14 +174,18 @@ void LCD_Init(void) {
 }
 
 
-/******************************************************************************
- * Function: LCD_Clear(void)
- *
- * Returns: Nothing
- * 
- * Description: This routine clears the display and sets the cursor to the left
- * edge of the first line of the display.
+/******************************************************************************* 
+ * Function to clear the LCD display
  ******************************************************************************/
+/*
+ * @brief This routine clears the display and sets the cursor to the left
+ * edge of the first line of the display.
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 void LCD_Clear(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
@@ -175,13 +194,17 @@ void LCD_Clear(void) {
 }
 
 
-/******************************************************************************
- * Function: LCD_PrintCharacter(uint8_t input)
- *
- * Returns: Nothing
- * 
- * Description: This routine...
+/******************************************************************************* 
+ * Function to print a character on the LCD display
  ******************************************************************************/
+/*
+ * @brief This routine prints a character on the LCD display
+ * 
+ * @param input (char)
+ * 
+ * @return void 
+ * 
+*/
 void LCD_PrintCharacter(char input) {
   
     while (!LCD_IsIdle()); // wait while LCD is still busy
@@ -189,13 +212,17 @@ void LCD_PrintCharacter(char input) {
 }
 
 
-/******************************************************************************
- * Function: LCD_PrintString(const char *data)
- *
- * Returns: Nothing
- * 
- * Description: This routine writes a string to the LCD
+/******************************************************************************* 
+ * Function to print a string on the LCD display
  ******************************************************************************/
+/*
+ * @brief This routine writes a string to the LCD
+ * 
+ * @param input (char)
+ * 
+ * @return void 
+ * 
+*/
 void LCD_PrintString(const char *input) {
     
     size_t i;
@@ -207,15 +234,20 @@ void LCD_PrintString(const char *input) {
 }
 
 
-/******************************************************************************
- * Function: LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset)
- *
- * Returns: Nothing
- * 
- * Description: This routine routine sets the cursor to a position in either the 
+
+/******************************************************************************* 
+ * Function to set the cursor position
+ ******************************************************************************/
+/*
+ * @brief This routine routine sets the cursor to a position in either the 
  * first or second display line, where the offset determines the exact position
  * in that line, starting from the position at the very left. 
- ******************************************************************************/
+ * 
+ * @param cursor line, cursor position offset
+ * 
+ * @return void 
+ * 
+*/
 void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset) {
     
     uint8_t value;
@@ -238,16 +270,21 @@ void LCD_SetCursor(LCD_CURSOR_LINE line, uint8_t offset) {
     __delay_ms(5);
 }
 
-/******************************************************************************
- * Function: LCD_ShiftDisplayRight(void)
- *
- * Returns: Nothing
- * 
- * Description: This routine shifts the display to the right without writing or
- * reading data. When the displayed data is shifted repeatedly each line moves
- * only horizontally. The second line display does not shift into the first line
- * position.
+/******************************************************************************* 
+ * Function to shift the display to the right
  ******************************************************************************/
+/*
+ * @brief By invoking this function once, both lines of the display are shifted 
+ * by one position to the right. This routine shifts the display to the right 
+ * without writing or reading data. When the displayed data is shifted repeatedly
+ * each line moves only horizontally. The second line display does not shift
+ * into the first line position.
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 void LCD_ShiftDisplayRight(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
@@ -255,16 +292,21 @@ void LCD_ShiftDisplayRight(void) {
 }
 
 
-/******************************************************************************
- * Function: LCD_ShiftDisplayLeft(void) 
- *
- * Returns: Nothing
- * 
- * Description: This routine shifts the display to the left without writing or
- * reading data. When the displayed data is shifted repeatedly each line moves
- * only horizontally. The second line display does not shift into the first line
- * position.
+/******************************************************************************* 
+ * Function to the shift the display to the left
  ******************************************************************************/
+/*
+ * @brief By invoking this function once, both lines of the display are shifted 
+ * by one position to the left. This routine shifts the display to the left 
+ * without writing or reading data. When the displayed data is shifted repeatedly
+ * each line moves only horizontally. The second line display does not shift
+ * into the first line position.
+ * 
+ * @param 
+ * 
+ * @return void 
+ * 
+*/
 void LCD_ShiftDisplayLeft(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
@@ -272,14 +314,18 @@ void LCD_ShiftDisplayLeft(void) {
 }
 
 
-/******************************************************************************
- * Function: LCD_ShiftCursorRight(void)
- *
- * Returns: Nothing
- * 
- * Description: This routine shifts the cursor by one position to the right 
- * without changing DDRAM contents
+/******************************************************************************* 
+ * Function to shift the cursor to the right
  ******************************************************************************/
+/*
+ * @brief This routine shifts the cursor by one position to the right 
+ * without changing DDRAM contents
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 void LCD_ShiftCursorRight(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
@@ -287,14 +333,18 @@ void LCD_ShiftCursorRight(void) {
 }
 
 
-/******************************************************************************
- * Function: LCD_ShiftCursorRight(void)
- *
- * Returns: Nothing
- * 
- * Description: This routine shifts the cursor by one position to the left 
- * without changing DDRAM contents
+/******************************************************************************* 
+ * Function to shift the cursor to the left 
  ******************************************************************************/
+/*
+ * @brief This routine shifts the cursor by one position to the left 
+ * without changing DDRAM contents
+ * 
+ * @param None
+ * 
+ * @return void 
+ * 
+*/
 void LCD_ShiftCursorLeft(void) {
     
     while (!LCD_IsIdle()); // wait while LCD is still busy
@@ -302,16 +352,17 @@ void LCD_ShiftCursorLeft(void) {
 }
 
 
-/******************************************************************************
- * Function: LCD_PrintInteger(int16_t number, uint8_t intBase)
- *
- * Returns: Nothing
- * 
- * Description: This function takes a integer number and its base (decimal,
- * hexadecimal, octal), converts it to a string and prints it on the
- * LCD display. The implementation of this function is based on the example
- * provided by: https://www.geeksforgeeks.org/implement-itoa/
+/******************************************************************************* 
+ * Function to print an integer value on the LCD display
  ******************************************************************************/
+/*
+ * @brief This function prints a integer value on the LCD display
+ * 
+ * @param number, base (decimal, hexadecimal, octal) 
+ * 
+ * @return void 
+ * 
+*/
 void LCD_PrintInteger(int16_t number, uint8_t intBase) {
 
     char buffer[20] = "";
@@ -353,13 +404,6 @@ void LCD_PrintInteger(int16_t number, uint8_t intBase) {
 }
 
 
-/******************************************************************************
- * Function: LCD_ReverseString(char str[], uint16_t length)
- *
- * Returns: Nothing
- * 
- * Description: This function reverses the provided string via pointer
- ******************************************************************************/
 static void LCD_ReverseString(char str[], uint16_t length) {
     
     char temp;
@@ -376,14 +420,18 @@ static void LCD_ReverseString(char str[], uint16_t length) {
 }
 
 
-/******************************************************************************
- * Function: LCD_ReadDataNibble(uint8_t *pReturnValue)
- *
- * Returns: Nothing
- * 
- * Description: This routine reads a data nibble from/to the bus-interface. The
- * read data value is returned via passing a function parameter by reference.
+/******************************************************************************* 
+ * Function to print an integer value on the LCD display
  ******************************************************************************/
+/*
+ * @brief This routine reads a data nibble from/to the bus-interface. The
+ * read data value is returned via passing a function parameter by reference.
+ * 
+ * @param pointer to return value (uint8_t) 
+ * 
+ * @return void 
+ * 
+*/
 static void LCD_ReadDataNibble(uint8_t *pReturnValue) {
     
     LCD_EN = 1; // Start reading/writing data
@@ -394,13 +442,17 @@ static void LCD_ReadDataNibble(uint8_t *pReturnValue) {
 }
 
 
-/******************************************************************************
- * Function: LCD_ReadDataByte(void)
- *
- * Returns: Data byte as uint8_t
- * 
- * Description: This routine reads a data byte from/to the bus-interface.
+/******************************************************************************* 
+ * Function to print an integer value on the LCD display
  ******************************************************************************/
+/*
+ * @brief This routine reads a data byte from/to the bus-interface.
+ * 
+ * @param None
+ * 
+ * @return Data byte (uint8_t) 
+ * 
+*/
 static uint8_t LCD_ReadDataByte(void) {
     
     _Bool rsStateHistory;
