@@ -17,10 +17,10 @@
 
 #include "mcc_generated_files/mcc.h"
 
-#define MOVING_AVERAGE_WINDOW_SIZE 60
+#define MOVING_AVERAGE_WINDOW_SIZE 120 // 120 minutes
 
 void initPressureReadings(void);
-uint16_t calcPressureMovingAverage(void);
+uint32_t calcPressureMovingAverage(void);
 void updatePressureReadings(uint32_t pressure);
 void timer0ISR(void);
 

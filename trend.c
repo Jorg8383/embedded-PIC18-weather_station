@@ -17,8 +17,8 @@
 #include "trend.h"
 
 // Global variables
-volatile _Bool updatePressureReadings;
-uint16_t pressureReadings[MOVING_AVERAGE_WINDOW_SIZE];
+volatile _Bool updatePressureReading;
+uint32_t pressureReadings[MOVING_AVERAGE_WINDOW_SIZE];
 uint8_t numberOfValidReadings = 0;
 
 
@@ -30,23 +30,23 @@ void initPressureReadings(void) {
 }
 
 
-uint16_t calcPressureMovingAverage(void) {
+uint32_t calcPressureMovingAverage(void) {
     
     uint32_t sum = 0;
-    uint16_t result = 0;
+    uint32_t result = 0;
     
     for (uint8_t i = 0 ; i < numberOfValidReadings ; i++) {
         sum += pressureReadings[i];
     } 
     if (numberOfValidReadings > 0) {
-        result = (uint16_t)(sum / numberOfValidReadings);
+        result = sum / numberOfValidReadings;
     }
     
     return result;
 }
 
 
-void updatePressureReadings(uint16_t pressure) {
+void updatePressureReadings(uint32_t pressure) {
 
     uint8_t currentReadingIndex = 0;
     
@@ -56,11 +56,11 @@ void updatePressureReadings(uint16_t pressure) {
     if (numberOfValidReadings < MOVING_AVERAGE_WINDOW_SIZE)
         numberOfValidReadings++;
     
-    updatePressureReadings = false;
+    updatePressureReading = false;
 }
 
 
 void timer0ISR(void) {
     
-    updatePressureReadings = true;
+    updatePressureReading = true;
 }
