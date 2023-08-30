@@ -52,7 +52,17 @@ static void (*const pStateHandlers[])(DeviceState*, DeviceContext*) = {
 };
 
 
-// Function to initialise the state machine
+/******************************************************************************* 
+ * Function to initialise the finite state machine
+ ******************************************************************************/
+/*
+ * @brief This initialisation function needs to be invoked once 
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     // Check for null pointers
@@ -69,7 +79,18 @@ void initStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
 }
 
 
-// Function to run the state machine and invoke the current state function
+/******************************************************************************* 
+ * Function to run the finite state machine
+ ******************************************************************************/
+/*
+ * @brief This drives the finite state machine and needs to be invoked
+ * cyclically
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     static DeviceState prevState;
@@ -87,7 +108,17 @@ void runStateMachine(DeviceState *pCurrentState, DeviceContext *pContext) {
     
 }
 
-
+/******************************************************************************* 
+ * State: Init 
+ ******************************************************************************/
+/*
+ * @brief This state is the initialisation routine of the state machine
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     uint8_t i;
@@ -108,6 +139,18 @@ static void stateInit(DeviceState *pCurrentState, DeviceContext *pContext) {
 }
 
 
+/******************************************************************************* 
+ * State: Update Measurement 
+ ******************************************************************************/
+/*
+ * @brief This state reads the raw sensor data and calculates pressure,
+ * temperature, and altitude values.
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateUpdateMeasurement(DeviceState *pCurrentState, 
         DeviceContext *pContext){
     
@@ -125,6 +168,17 @@ static void stateUpdateMeasurement(DeviceState *pCurrentState,
 }
 
 
+/******************************************************************************* 
+ * State: Display Temperature
+ ******************************************************************************/
+/*
+ * @brief This state displays the temperature on the LCD.
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateDisplayTemperature(DeviceState *pCurrentState, 
         DeviceContext *pContext) 
 {   
@@ -153,6 +207,17 @@ static void stateDisplayTemperature(DeviceState *pCurrentState,
 }
 
 
+/******************************************************************************* 
+ * State: Display Pressure
+ ******************************************************************************/
+/*
+ * @brief This state displays the pressure on the LCD.
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateDisplayPressure(DeviceState *pCurrentState,
         DeviceContext *pContext)
 {
@@ -184,7 +249,17 @@ static void stateDisplayPressure(DeviceState *pCurrentState,
     (*pCurrentState)++; 
 }
 
-
+/******************************************************************************* 
+ * State: Display Altitude
+ ******************************************************************************/
+/*
+ * @brief This state displays the altitude on the LCD.
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateDisplayAltitude(DeviceState *pCurrentState,
         DeviceContext *pContext) 
 {
@@ -211,7 +286,17 @@ static void stateDisplayAltitude(DeviceState *pCurrentState,
     (*pCurrentState)++; 
 }
 
-
+/******************************************************************************* 
+ * State: Wait
+ ******************************************************************************/
+/*
+ * @brief This state delays switching to the next state.
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
    
     __delay_ms(3000);
@@ -219,6 +304,17 @@ static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
 }
 
 
+/******************************************************************************* 
+ * State: Final
+ ******************************************************************************/
+/*
+ * @brief This is the final state, pointing back to the origin state
+ * 
+ * @param pointer to the current state, pointer to the device context
+ * 
+ * @return void 
+ * 
+*/
 static void stateFinal(DeviceState *pCurrentState, DeviceContext *pContext) {
     
     (*pCurrentState) = STATE_UPDATE_MEASUREMENT;    
