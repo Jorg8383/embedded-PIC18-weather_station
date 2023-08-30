@@ -317,5 +317,5 @@ static void stateWait(DeviceState *pCurrentState, DeviceContext *pContext) {
 */
 static void stateFinal(DeviceState *pCurrentState, DeviceContext *pContext) {
     
-    (*pCurrentState) = STATE_UPDATE_MEASUREMENT;    
+    (*pCurrentState) = STATE_INIT;    
 }
