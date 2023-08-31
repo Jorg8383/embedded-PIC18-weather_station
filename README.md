@@ -29,6 +29,10 @@ Next, the current temperature is displayed as shown below. Despite displaying it
 
 <div style="text-align:center"><img src="images/Temperature.png" alt="temperature" width="400" /></div>
 
+<div style="text-align: center;">
+    ![Temperature](images/Temperature.png "Temperature screen")
+</div>
+
 
 
 ### Temperature
