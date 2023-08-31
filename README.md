@@ -1,4 +1,4 @@
-# Weather Station - PIC18 and the Bosch BMP180 sensor via I2C
+# Weather Station - PIC18 and the BMP180 sensor via I2C
 
 This weather station project incorporates a PIC18 microcontroller, a Bosch BMP180 barometric pressure sensor, and a Hitachi HD44780 LCD. It demonstrates the implementation of two APIs to communicate with the sensor via I2C and the LCD via a 4-bit interface.
 
@@ -22,8 +22,9 @@ The LCD menu is split into five screens, showing a welcome message, the current 
 
 After successfully initialising the communication with the barometric pressure sensor and the LCD, a welcome message is displayed, as indicated below, shifting slowly from the right to the left of the display. In case of failing to establish communication with the sensor, an error message will be shown instead.
 
-<div style="text-align:center"><img src="images/Welcome.png" alt="welcome" width="400" /></div>
-
+<p align="center" width="100%">
+    <img width="400" src="images/Welcome.png">
+</p>
 Next, the current temperature is displayed as shown below. Despite displaying it with one decimal place, no float arithmetic was used for calculating the temperature. Instead, integer arithmetic and a function that prints an integer as a float value were implemented.
 
 <div style="text-align:center"><img src="images/Temperature.png" alt="temperature" width="400" /></div>
