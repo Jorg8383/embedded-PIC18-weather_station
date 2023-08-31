@@ -18,30 +18,32 @@ A finite state machine based on function pointers realises the internal device s
 
 ## Device Operation
 
-The LCD menu is split into five screens, showing a welcome message, the current temperature, atmospheric pressure and altitude, and the weather trend. While the welcoming screen is shown once after power is switched on, the other screens rotate in a three-second interval.
+The LCD menu is split into five screens, showing a welcome message, the current temperature, atmospheric pressure and altitude, and the weather trend. While the welcoming screen is shown once after power is switched on, the other screens rotate in a three-second interval. Another feature is the dimmable LCD backlight, where the potentiometer for dimming is located on the Curiosity HPC board, using peripherals such as Analogue-Digital Conversion (ADC) and Puls-Width-Modulation (PWM).
 
 After successfully initialising the communication with the barometric pressure sensor and the LCD, a welcome message is displayed, as indicated below, shifting slowly from the right to the left of the display. In case of failing to establish communication with the sensor, an error message will be shown instead.
 
 <p align="center" width="100%">
     <img width="400" src="images/Welcome.png">
 </p>
-Next, the current temperature is displayed as shown below. Despite displaying it with one decimal place, no float arithmetic was used for calculating the temperature. Instead, integer arithmetic and a function that prints an integer as a float value were implemented.
 
-<div style="text-align:center"><img src="images/Temperature.png" alt="temperature" width="400" /></div>
+Next, the current temperature is displayed as shown below. Despite displaying it with one decimal place, no float arithmetic was used for calculating the temperature. Instead, integer arithmetic and a function that prints the temperature (int) as a float value were implemented.
 
-<div style="text-align: center;">
-    ![Temperature](images/Temperature.png "Temperature screen")
-</div>
+<p align="center" width="100%">
+    <img width="400" src="images/Temperature.png">
+</p>
 
+As depicted in the screen below, the atmospheric pressure is displayed in hectopascal, whereas internally, the pressure is calculated in Pa (1 hPa = 100 Pa) to increase the accuracy when using integer arithmetic. The equivalent to 1 hPa is one millibar, the metric unit of pressure. Note that the atmospheric pressure changes with weather conditions because it is influenced by the movement of air masses and the presence of high and low-pressure systems. When warm air rises and creates areas of low pressure, it often leads to unsettled weather with clouds and precipitation, while sinking cool air generates high-pressure systems associated with fair and stable weather conditions.
 
+<p align="center" width="100%">
+    <img width="400" src="images/Pressure.png">
+</p>
 
-### Temperature
+The screen shown below indicates the calculated altitude in metres. Altitude can be derived from atmospheric pressure using the barometric formula based on the principle that atmospheric pressure decreases with increasing altitude. By measuring the current atmospheric pressure at a specific location and comparing it to a reference pressure (usually the standard atmospheric pressure at sea level), altitude above sea level can be calculated. However, weather changes, such as shifts in atmospheric pressure due to incoming weather systems or temperature changes, can influence the accuracy of this method. Sudden and significant changes in atmospheric pressure can result in inaccurate altitude readings.
 
-### Atmospheric Pressure
+<p align="center" width="100%">
+    <img width="400" src="images/Altitude.png">
+</p>
 
-### Altitude
-
-### Weather Trend
 
 
 ## Software Used
