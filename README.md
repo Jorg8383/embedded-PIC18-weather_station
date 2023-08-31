@@ -44,7 +44,7 @@ The screen shown below indicates the calculated altitude in metres. Altitude can
     <img width="300" src="images/Altitude.png">
 </p>
 
-Finally, the device indicates the weather trend, as shown in the screen below. Depending on the atmospheric pressure change over time, the LCD either displays the trend as "Wx is improving", "Wx is stable", or "Wx is worsening", where "Wx" is the abbreviation for the weather. A so-called moving average algorithm was utilised to filter out potential fluctuations in the pressure readings. Every minute, a new temperature reading is added to a FIFO to determine the moving average pressure. In total, the FIFO can hold up to 120 pressure readings. The delta pressure is indicated in the second line on the left, and the figure to the right indicates the number of collected pressure readings used to calculate the delta pressure value.
+Finally, the device indicates the weather trend, as shown in the screen below. Depending on the atmospheric pressure change over time, the LCD either displays the trend as "Wx is improving", "Wx is stable", or "Wx is worsening", where "Wx" is the abbreviation for the weather. A so-called moving average algorithm was utilised to filter out potential fluctuations in the pressure readings. Every minute, a new pressure reading is added to a FIFO to determine the moving average pressure. In total, the FIFO can hold up to 120 pressure readings. The delta pressure is indicated in the second line on the left, and the figure to the right indicates the number of collected pressure readings used to calculate the delta pressure value.
 
 <p align="center" width="100%">
     <img width="300" src="images/Trend.png">
